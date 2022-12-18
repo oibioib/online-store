@@ -1,8 +1,9 @@
-import { useQueryParam, StringParam, NumberParam } from 'use-query-params';
+import { useSearchParams } from 'react-router-dom';
 const MainPage = () => {
-  const [s] = useQueryParam('string', StringParam);
-  const [n] = useQueryParam('number', NumberParam);
+  const [params] = useSearchParams();
 
+  const s = params.get('string');
+  const n = params.get('number');
   return (
     <div>
       <h1>Main</h1>
