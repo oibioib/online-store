@@ -1,34 +1,7 @@
-import { BrowserRouter as Router, Outlet, Route, Routes } from 'react-router-dom';
-
-import MainPage from './pages/MainPage';
-import CartPage from './pages/CartPage';
-import ProductPage from './pages/ProductPage';
-import ErrorPage from './pages/ErrorPage';
-import Header from './components/Header';
-
-import '@fontsource/inter';
-import './App.css';
-import { Grid } from '@mui/material';
-import { ThemeProvider } from '@mui/material/styles';
-import muiThemeSettings from './theme/Theme';
-
-function Layout() {
-  return (
-    <ThemeProvider theme={muiThemeSettings}>
-      <Grid
-        container
-        justifyContent="center"
-        alignItems="center"
-        textAlign="center"
-        gap="8px"
-        padding={1}
-        direction="column">
-        <Header />
-        <Outlet />
-      </Grid>
-    </ThemeProvider>
-  );
-}
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { MainPage, CartPage, ProductPage, ErrorPage } from './pages';
+import { Layout } from './layouts';
+import TempPageWithUIElements from './theme/TempPageWithUIElements';
 
 function App() {
   return (
@@ -38,8 +11,9 @@ function App() {
           <Route index element={<MainPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/product/:id" element={<ProductPage />} />
-          <Route path="*" element={<ErrorPage />} />
+          <Route path="/ui" element={<TempPageWithUIElements />} />
         </Route>
+        <Route path="*" element={<ErrorPage />} />
       </Routes>
     </Router>
   );
