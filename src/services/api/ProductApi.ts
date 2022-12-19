@@ -9,8 +9,8 @@ export function DescriptionPage() {
 
   useEffect(() => {
     async function tempFunction() {
-      const tempArr = await fetch('https://dummyjson.com/products?limit=100').then((response) => response.json());
-      setProductsArr(tempArr.products);
+      const tempArr = await axios.get('https://dummyjson.com/products?limit=10');
+      setProductsArr(tempArr.data.products);
     }
     tempFunction();
   }, []);
