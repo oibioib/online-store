@@ -8,4 +8,6 @@ export default interface IProducts {
   rating: number;
   stock: number;
   thumbnail: string;
+  discountPercentage: number;
+  category: string;
 }
