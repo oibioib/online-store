@@ -68,7 +68,7 @@ const ProductPage = () => {
           <Grid item xs={12}>
             <Box>{product?.title}</Box>
           </Grid>
-          <Grid item xs={1}>
+          <Grid item xs={2} md={1}>
             <Box onClick={handleClick}>
               <ImageList cols={1}>
                 {product?.images.map((item) => (
@@ -86,7 +86,7 @@ const ProductPage = () => {
               <Image src={`${!state ? product?.images[0] : imageUrl}`} alt={`${product?.title}`} />
             </Box>
           </Grid>
-          <Grid item xs={5}>
+          <Grid item xs={4} md={5}>
             <DescriptionItem>
               <div>Description:</div>
               <div>{product?.description}</div>
@@ -115,10 +115,10 @@ const ProductPage = () => {
           <Grid item xs={3} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
               <div>euro: {product?.price}.00</div>
-              <Button sx={{ marginTop: '1rem' }} variant="contained" component={Link} to={'/product/26'}>
+              <Button sx={{ margin: '1rem' }} variant="contained" component={Link} to={'/product/26'}>
                 Add to cart
               </Button>
-              <Button sx={{ marginTop: '1rem' }} variant="contained" component={Link} to={'/product/25'}>
+              <Button sx={{ margin: '1rem' }} variant="contained" component={Link} to={'/product/25'}>
                 Buy now
               </Button>
             </Box>
