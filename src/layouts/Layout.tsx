@@ -6,22 +6,25 @@ import '@fontsource/inter';
 import { ThemeProvider } from '@mui/material/styles';
 import { Grid } from '@mui/material';
 import muiThemeSettings from '../theme/Theme';
+import { Container } from '@mui/system';
 
 function Layout() {
   return (
     <ThemeProvider theme={muiThemeSettings}>
-      <Grid
-        container
-        justifyContent="center"
-        alignItems="center"
-        textAlign="center"
-        gap="8px"
-        padding={1}
-        direction="column">
-        <Header />
-        <Outlet />
-        <Footer />
-      </Grid>
+      <Container maxWidth="lg">
+        <Grid
+          container
+          justifyContent="center"
+          alignItems="center"
+          textAlign="center"
+          gap="8px"
+          padding={1}
+          direction="column">
+          <Header />
+          <Outlet />
+          <Footer />
+        </Grid>
+      </Container>
     </ThemeProvider>
   );
 }

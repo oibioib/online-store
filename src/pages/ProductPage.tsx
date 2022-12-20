@@ -1,19 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { DescriptionPage } from '../services/api/ProductApi';
 import { Typography, Breadcrumbs, Grid, Paper, Box, ImageList, ImageListItem, Button } from '@mui/material';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
-import { borderRadius } from '@mui/system';
 import Image from 'mui-image';
-
-// const Item = styled(Paper)(({ theme }) => ({
-//   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-//   ...theme.typography.body2,
-//   padding: theme.spacing(1),
-//   textAlign: 'center',
-//   color: theme.palette.text.secondary,
-// }));
+import { getProduct } from '../services/ProductsApi';
+import { Product } from '../types/Types';
 
 const DescriptionItem = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -30,8 +22,8 @@ let state = false;
 const ProductPage = () => {
   const id = useParams().id;
   const navigate = useNavigate();
-  const product = DescriptionPage();
-  const [imageUrl, setImageUrl] = useState(`${product?.images[0]}`);
+  const [product, setProduct] = useState<Product>();
+  const [imageUrl, setImageUrl] = useState<string>();
 
   function handleClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     event.preventDefault();
@@ -44,89 +36,100 @@ const ProductPage = () => {
     if (id && +id === 101) {
       navigate('/error', { replace: true });
     }
-  });
+    if (id) {
+      (async () => {
+        const result = await getProduct(+id);
+        if (result) {
+          setProduct(result);
+        }
+      })();
+    }
+  }, [id, navigate]);
 
-  return (
-    <div>
-      <Grid container spacing={1}>
-        <Grid item xs={12}>
-          <Box component="div" sx={{ p: 2, display: 'flex', justifyContent: 'center' }} role="presentation">
-            <Breadcrumbs aria-label="breadcrumb">
-              <Link to="/">Store</Link>
-              <Link to="/">{product?.brand}</Link>
-              <Link to="/">{product?.category}</Link>
-              <Typography color="text.primary">{product?.title}</Typography>
-            </Breadcrumbs>
-          </Box>
-        </Grid>
-        <Grid
-          item
-          xs={12}
-          container
-          spacing={2}
-          sx={{ border: 'solid black 1px', borderRadius: '1rem', margin: '2rem 3rem' }}>
+  if (product) {
+    return (
+      <div>
+        <Grid container spacing={1}>
           <Grid item xs={12}>
-            <Box>{product?.title}</Box>
-          </Grid>
-          <Grid item xs={2} md={1}>
-            <Box onClick={handleClick}>
-              <ImageList cols={1}>
-                {product?.images.map((item) => (
-                  <ImageListItem
-                    sx={{ marginTop: '0.5rem', border: 'solid black 1px', borderRadius: '4px' }}
-                    key={item}>
-                    <img src={`${item}`} srcSet={`${item}`} alt={item} loading="lazy" />
-                  </ImageListItem>
-                ))}
-              </ImageList>
+            <Box component="div" sx={{ p: 2, display: 'flex', justifyContent: 'center' }} role="presentation">
+              <Breadcrumbs aria-label="breadcrumb">
+                <Link to="/">Store</Link>
+                <Link to="/">{product?.brand}</Link>
+                <Link to="/">{product?.category}</Link>
+                <Typography color="text.primary">{product?.title}</Typography>
+              </Breadcrumbs>
             </Box>
           </Grid>
-          <Grid item xs={3} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-            <Box>
-              <Image src={`${!state ? product?.images[0] : imageUrl}`} alt={`${product?.title}`} />
-            </Box>
-          </Grid>
-          <Grid item xs={4} md={5}>
-            <DescriptionItem>
-              <div>Description:</div>
-              <div>{product?.description}</div>
-            </DescriptionItem>
-            <DescriptionItem>
-              <div>Discount Percentage:</div>
-              <div>{product?.discountPercentage}</div>
-            </DescriptionItem>
-            <DescriptionItem>
-              <div>Rating:</div>
-              <div>{product?.rating}</div>
-            </DescriptionItem>
-            <DescriptionItem>
-              <div>Stock:</div>
-              <div>{product?.stock}</div>
-            </DescriptionItem>
-            <DescriptionItem>
-              <div>Brand:</div>
-              <div>{product?.brand}</div>
-            </DescriptionItem>
-            <DescriptionItem>
-              <div>Category:</div>
-              <div>{product?.category}</div>
-            </DescriptionItem>
-          </Grid>
-          <Grid item xs={3} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-              <div>euro: {product?.price}.00</div>
-              <Button sx={{ margin: '1rem' }} variant="contained" component={Link} to={'/product/26'}>
-                Add to cart
-              </Button>
-              <Button sx={{ margin: '1rem' }} variant="contained" component={Link} to={'/product/25'}>
-                Buy now
-              </Button>
-            </Box>
+          <Grid
+            item
+            xs={12}
+            container
+            spacing={2}
+            sx={{ border: 'solid black 1px', borderRadius: '1rem', margin: '2rem 3rem' }}>
+            <Grid item xs={12}>
+              <Box>{product?.title}</Box>
+            </Grid>
+            <Grid item xs={2} md={1}>
+              <Box onClick={handleClick}>
+                {}
+                <ImageList cols={1}>
+                  {product?.images.map((item) => (
+                    <ImageListItem
+                      sx={{ marginTop: '0.5rem', border: 'solid black 1px', borderRadius: '4px' }}
+                      key={item}>
+                      <img src={`${item}`} srcSet={`${item}`} alt={item} loading="lazy" />
+                    </ImageListItem>
+                  ))}
+                </ImageList>
+              </Box>
+            </Grid>
+            <Grid item xs={3} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+              <Box>
+                <Image src={`${!state ? product?.images[0] : imageUrl}`} alt={`${product?.title}`} />
+              </Box>
+            </Grid>
+            <Grid item xs={4} md={5}>
+              <DescriptionItem>
+                <div>Description:</div>
+                <div>{product?.description}</div>
+              </DescriptionItem>
+              <DescriptionItem>
+                <div>Discount Percentage:</div>
+                <div>{product?.discountPercentage}</div>
+              </DescriptionItem>
+              <DescriptionItem>
+                <div>Rating:</div>
+                <div>{product?.rating}</div>
+              </DescriptionItem>
+              <DescriptionItem>
+                <div>Stock:</div>
+                <div>{product?.stock}</div>
+              </DescriptionItem>
+              <DescriptionItem>
+                <div>Brand:</div>
+                <div>{product?.brand}</div>
+              </DescriptionItem>
+              <DescriptionItem>
+                <div>Category:</div>
+                <div>{product?.category}</div>
+              </DescriptionItem>
+            </Grid>
+            <Grid item xs={3} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                <div>euro: {product?.price}.00</div>
+                <Button sx={{ margin: '1rem' }} variant="contained" component={Link} to={'/product/26'}>
+                  Add to cart
+                </Button>
+                <Button sx={{ margin: '1rem' }} variant="contained" component={Link} to={'/product/25'}>
+                  Buy now
+                </Button>
+              </Box>
+            </Grid>
           </Grid>
         </Grid>
-      </Grid>
-    </div>
-  );
+      </div>
+    );
+  } else return <></>;
 };
 
 export default ProductPage;
