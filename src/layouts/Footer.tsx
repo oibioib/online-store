@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
-    <Grid container justifyContent="center" alignItems="center" gap="8px" padding={1}>
+    <Grid container justifyContent="center" alignItems="center" gap={1} padding={1}>
       <Button component={Link} to={'/'} variant="contained">
         Main page
       </Button>
