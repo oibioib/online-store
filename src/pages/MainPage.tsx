@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+// import ProductsDraft from '../services/api/Products';
 import { getProducts } from '../services/ProductsApi';
 import { Product, ProductDetailsLabels } from '../types/Types';
 import { Button, Grid, Paper, Typography } from '@mui/material';

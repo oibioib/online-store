@@ -17,6 +17,7 @@
     "@types/react-dom": "^18.0.9",
     "@types/react-router": "^5.1.19",
     "axios": "^1.2.1",
+    "mui-image": "^1.0.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.5.0",
@@ -49,6 +50,7 @@
     ]
   },
   "devDependencies": {
+    "@types/mui-image": "^1.0.1",
     "@typescript-eslint/eslint-plugin": "^5.46.1",
     "@typescript-eslint/parser": "^5.46.1",
     "eslint-config-prettier": "^8.5.0",
