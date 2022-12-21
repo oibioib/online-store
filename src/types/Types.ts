@@ -8,6 +8,10 @@ export enum ApiEndpoints {
   Products = 'products',
 }
 
+export enum ProductPerPage {
+  perPage = 3,
+}
+
 export enum ProductDetailsLabels {
   Description = 'Description',
   DiscountPercentage = 'Discount',
@@ -30,4 +34,5 @@ export type Product = {
   thumbnail: string;
   discountPercentage: number;
   category: string;
+  quantity?: number;
 };

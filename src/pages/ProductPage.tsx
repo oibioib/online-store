@@ -72,12 +72,7 @@ const ProductPage = () => {
               </Breadcrumbs>
             </Box>
           </Grid>
-          <Grid
-            item
-            xs={12}
-            container
-            spacing={2}
-            sx={{ border: 'solid black 1px', borderRadius: '1rem', margin: '2rem 3rem' }}>
+          <Grid item xs={12} container spacing={2} sx={{ border: 'solid black 1px', margin: '2rem 3rem' }}>
             <Grid item xs={12}>
               <Box>{product.title}</Box>
             </Grid>
@@ -86,9 +81,7 @@ const ProductPage = () => {
                 {}
                 <ImageList cols={1}>
                   {product.images.map((item) => (
-                    <ImageListItem
-                      sx={{ marginTop: '0.5rem', border: 'solid black 1px', borderRadius: '4px' }}
-                      key={item}>
+                    <ImageListItem sx={{ marginTop: '0.5rem', border: 'solid black 1px' }} key={item}>
                       <img src={`${item}`} srcSet={`${item}`} alt={item} loading="lazy" />
                     </ImageListItem>
                   ))}
