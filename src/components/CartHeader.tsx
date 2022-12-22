@@ -1,6 +1,6 @@
 import { Box, Button, Input } from '@mui/material';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { ProductPerPage } from '../types/Types';
 
 interface CartHeader {
@@ -8,7 +8,7 @@ interface CartHeader {
 }
 
 const CartHeader = (props: CartHeader) => {
-  const location = window.location.search;
+  const location = useLocation()?.search;
   const urlParams = new URLSearchParams(location);
   let limitURL = '';
   let pageURL = '';
@@ -20,15 +20,14 @@ const CartHeader = (props: CartHeader) => {
   if (urlParams.get('page') != null) {
     pageURL = urlParams.get('page') as string;
   }
-  const [page, setPage] = useState<number>(pageURL ? +pageURL : 1);
+  const page = pageURL ? +pageURL : 1;
   let curPage = page;
-  const [limit, setLimit] = useState<number>(limitURL ? +limitURL : ProductPerPage.perPage);
+  const limit = limitURL ? +limitURL : ProductPerPage.perPage;
 
   const navigate = useNavigate();
   function onChangeHandler(event: React.ChangeEvent<HTMLInputElement>) {
     let newPath = location;
     itemPerPage = +event.target.value;
-    setLimit(itemPerPage);
     if (location && location.includes('page=')) {
       newPath += '&';
     } else newPath += '?';
@@ -41,7 +40,6 @@ const CartHeader = (props: CartHeader) => {
   function onBackHandler(): void {
     if (curPage > 1) {
       curPage--;
-      setPage(curPage);
       let newPath = location;
       if (location && location.includes('limit=')) {
         newPath += '&';
@@ -56,7 +54,6 @@ const CartHeader = (props: CartHeader) => {
   function onForwardHandler(): void {
     if (props.length && curPage < Math.ceil(props.length / limit)) {
       curPage++;
-      setPage(curPage);
       let newPath = location;
       if (location && location.includes('limit=')) {
         newPath += '&';

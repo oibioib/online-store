@@ -1,4 +1,4 @@
-import { Box, Grid } from '@mui/material';
+import { Grid } from '@mui/material';
 import { Product } from '../types/Types';
 import { useEffect, useState } from 'react';
 import { getProduct } from '../services/ProductsApi';
@@ -37,10 +37,8 @@ const CartPage = () => {
   if (urlParams.get('page') != null) {
     pageURL = urlParams.get('page') as string;
   }
-  const [page, setPage] = useState<number>(pageURL ? +pageURL : 1);
-  console.log(page);
-
-  const [itemPerPage, setItemPerPage] = useState<number>(limitURL ? +limitURL : ProductPerPage.perPage);
+  const page = pageURL ? +pageURL : 1;
+  const itemPerPage = limitURL ? +limitURL : ProductPerPage.perPage;
 
   useEffect(() => {
     (async () => {
@@ -55,8 +53,6 @@ const CartPage = () => {
         setProductArr(productsToRender);
       }
     })();
-    setPage(+pageURL);
-    setItemPerPage(+limitURL);
   }, [storeTempArr, location]);
 
   if (productArr) {
