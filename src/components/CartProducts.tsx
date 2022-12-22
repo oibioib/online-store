@@ -1,9 +1,6 @@
-import { Product } from '../types/Types';
 import Image from 'mui-image';
 import { Grid, Box, Button } from '@mui/material';
 import { ProductDetailsLabels, ICartProducts } from '../types/Types';
-
-
 
 const CartProducts = (props: ICartProducts) => {
   return (
