@@ -27,7 +27,6 @@ const ProductPage = () => {
   //Get the name from theme Experimental work with cart
   const key = 'OA_cart';
   const store = JSON.parse(localStorage?.getItem(key) || '{}');
-  console.log(product);
 
   function addToLocalStorage() {
     if (id) {

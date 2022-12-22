@@ -6,19 +6,19 @@ import { ICartHeader } from '../types/Types';
 const CartHeader = (props: ICartHeader) => {
   const location = useLocation()?.search;
   const urlParams = new URLSearchParams(location);
-  let limitURL = '';
-  let pageURL = '';
+  let limitParam = '';
+  let pageParam = '';
   let itemPerPage: number;
   if (urlParams.get('limit') != null) {
-    limitURL = urlParams.get('limit') as string;
+    limitParam = urlParams.get('limit') as string;
   }
 
   if (urlParams.get('page') != null) {
-    pageURL = urlParams.get('page') as string;
+    pageParam = urlParams.get('page') as string;
   }
-  const page = pageURL ? +pageURL : 1;
+  const page = pageParam ? +pageParam : 1;
   let curPage = page;
-  const limit = limitURL ? +limitURL : ProductPerPage.perPage;
+  const limit = limitParam ? +limitParam : ProductPerPage.perPage;
 
   const navigate = useNavigate();
   function onChangeHandler(event: React.ChangeEvent<HTMLInputElement>) {
@@ -28,7 +28,7 @@ const CartHeader = (props: ICartHeader) => {
       newPath += '&';
     } else newPath += '?';
     if (location && location.includes('limit=')) {
-      newPath = location.replace(`limit=${limitURL}`, `limit=${itemPerPage.toString()}`);
+      newPath = location.replace(`limit=${limitParam}`, `limit=${itemPerPage.toString()}`);
     } else newPath += `limit=${itemPerPage.toString()}`;
     navigate(newPath);
   }
@@ -41,7 +41,7 @@ const CartHeader = (props: ICartHeader) => {
         newPath += '&';
       } else newPath += '?';
       if (location && location.includes('page=')) {
-        newPath = location.replace(`page=${pageURL}`, `page=${curPage.toString()}`);
+        newPath = location.replace(`page=${pageParam}`, `page=${curPage.toString()}`);
       } else newPath += `page=${curPage.toString()}`;
       navigate(newPath);
     }
@@ -55,7 +55,7 @@ const CartHeader = (props: ICartHeader) => {
         newPath += '&';
       } else newPath += '?';
       if (location && location.includes('page=')) {
-        newPath = location.replace(`page=${pageURL}`, `page=${curPage.toString()}`);
+        newPath = location.replace(`page=${pageParam}`, `page=${curPage.toString()}`);
       } else newPath += `page=${curPage.toString()}`;
       navigate(newPath);
     }

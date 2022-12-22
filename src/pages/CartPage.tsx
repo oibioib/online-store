@@ -1,23 +1,12 @@
 import { Grid } from '@mui/material';
 import { Product, ProductPerPage, storeItem } from '../types/Types';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getProduct } from '../services/ProductsApi';
 import CartHeader from '../components/CartHeader';
 import CartProducts from '../components/CartProducts';
 import { useLocation } from 'react-router';
 
-//Type
-
 const CartPage = () => {
-  // Working with localStorage. Change in future
-  const key = 'OA_cart';
-  const store = JSON.parse(localStorage?.getItem(key) || '{}');
-  const storeTempArr: storeItem[] = useMemo(() => [], []);
-  for (const [productId, value] of Object.entries<string>(store)) {
-    storeTempArr.push({ id: +productId, quantity: +value });
-  }
-
-  //////////////////
   const [productArr, setProductArr] = useState<Product[]>();
   const location = useLocation()?.search;
   const urlParams = new URLSearchParams(location);
@@ -35,6 +24,15 @@ const CartPage = () => {
 
   useEffect(() => {
     (async () => {
+      // Working with localStorage. Change in future
+      const key = 'OA_cart';
+      const store = JSON.parse(localStorage?.getItem(key) || '{}');
+      const storeTempArr: storeItem[] = [];
+      for (const [productId, value] of Object.entries<string>(store)) {
+        storeTempArr.push({ id: +productId, quantity: +value });
+      }
+
+      //////////////////
       const productsToRender: Product[] = [];
       const result = await Promise.all(storeTempArr.map((item) => getProduct(item.id)));
       result.forEach((item) => {
@@ -46,7 +44,7 @@ const CartPage = () => {
         setProductArr(productsToRender);
       }
     })();
-  }, [location, store, storeTempArr]);
+  }, []);
 
   if (productArr) {
     return (
