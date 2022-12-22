@@ -1,13 +1,9 @@
 import { Box, Button, Input } from '@mui/material';
-import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ProductPerPage } from '../types/Types';
+import { ICartHeader } from '../types/Types';
 
-interface CartHeader {
-  length: number;
-}
-
-const CartHeader = (props: CartHeader) => {
+const CartHeader = (props: ICartHeader) => {
   const location = useLocation()?.search;
   const urlParams = new URLSearchParams(location);
   let limitURL = '';

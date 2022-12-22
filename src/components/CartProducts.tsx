@@ -1,13 +1,11 @@
 import { Product } from '../types/Types';
 import Image from 'mui-image';
 import { Grid, Box, Button } from '@mui/material';
-import { ProductDetailsLabels } from '../types/Types';
+import { ProductDetailsLabels, ICartProducts } from '../types/Types';
 
-interface CartProducts extends Product {
-  index: number;
-}
 
-const CartProducts = (props: CartProducts) => {
+
+const CartProducts = (props: ICartProducts) => {
   return (
     <Grid container sx={{ display: 'flex', justifyContent: 'space-between', marginTop: '2rem' }}>
       <Grid item xs={1}>

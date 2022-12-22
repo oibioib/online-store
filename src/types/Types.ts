@@ -36,3 +36,16 @@ export type Product = {
   category: string;
   quantity?: number;
 };
+
+export interface ICartHeader {
+  length: number;
+}
+
+export type storeItem = {
+  id: number;
+  quantity: number;
+};
+
+export interface ICartProducts extends Product {
+  index: number;
+}
