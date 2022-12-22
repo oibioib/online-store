@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import { getProduct } from '../services/ProductsApi';
 import CartHeader from '../components/CartHeader';
 import { ProductPerPage } from '../types/Types';
+import CartProducts from '../components/CartProducts';
+import { useLocation } from 'react-router';
 
 //Type
 
@@ -24,6 +26,21 @@ for (const [productId, value] of Object.entries<string>(store)) {
 
 const CartPage = () => {
   const [productArr, setProductArr] = useState<Product[]>();
+  const location = useLocation()?.search;
+  const urlParams = new URLSearchParams(location);
+  let limitURL = '';
+  let pageURL = '';
+  if (urlParams.get('limit') != null) {
+    limitURL = urlParams.get('limit') as string;
+  }
+
+  if (urlParams.get('page') != null) {
+    pageURL = urlParams.get('page') as string;
+  }
+  const [page, setPage] = useState<number>(pageURL ? +pageURL : 1);
+  console.log(page);
+
+  const [itemPerPage, setItemPerPage] = useState<number>(limitURL ? +limitURL : ProductPerPage.perPage);
 
   useEffect(() => {
     (async () => {
@@ -38,41 +55,21 @@ const CartPage = () => {
         setProductArr(productsToRender);
       }
     })();
-  }, [storeTempArr]);
-
-  const [page, setPage] = useState(1);
-  let curPage = page;
-
-  function onBackHandler(): void {
-    if (curPage > 1) {
-      curPage--;
-      setPage(curPage);
-    }
-  }
-
-  function onForwardHandler(): void {
-    if (productArr && curPage < Math.ceil(productArr.length / ProductPerPage.perPage)) {
-      curPage++;
-      setPage(curPage);
-    }
-  }
+    setPage(+pageURL);
+    setItemPerPage(+limitURL);
+  }, [storeTempArr, location]);
 
   if (productArr) {
     return (
       <Grid container spacing={1}>
-        <Grid item xs={12}>
-          <CartHeader
-            page={page}
-            onBackHandler={onBackHandler}
-            onForwardHandler={onForwardHandler}
-            itemsNum={productArr.length}
-          />
+        <Grid item xs={8}>
+          <CartHeader length={productArr.length} />
           {productArr
             .filter((_, index) => {
-              return index >= (page - 1) * ProductPerPage.perPage && index < page * ProductPerPage.perPage;
+              return index >= (page - 1) * itemPerPage && index < page * itemPerPage;
             })
-            .map((item) => {
-              return <Box key={`${item.id}`}>{item.title}</Box>;
+            .map((item, index) => {
+              return <CartProducts key={item.id} {...item} index={index + (page - 1) * itemPerPage} />;
             })}
         </Grid>
       </Grid>
