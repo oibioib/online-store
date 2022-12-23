@@ -14,6 +14,18 @@ const CartPage = () => {
     return JSON.parse(localStorage?.getItem(key) || '{}');
   });
   const [productArr, setProductArr] = useState<Product[]>();
+  const totalSum = productArr?.reduce<number>((acc: number, cur: Product) => {
+    if (cur.quantity && cur.price) {
+      return (acc += +cur?.quantity * +cur?.price);
+    }
+    return 0;
+  }, 0);
+  const totalItems = productArr?.reduce<number>((acc: number, cur: Product) => {
+    if (cur.quantity && cur.price) {
+      return (acc += +cur?.quantity);
+    }
+    return 0;
+  }, 0);
   const location = useLocation()?.search;
   const navigate = useNavigate();
   const urlParams = new URLSearchParams(location);
@@ -60,7 +72,7 @@ const CartPage = () => {
         setProductArr(undefined);
       }
     })();
-  }, [store, navigate]);
+  }, [store, navigate, totalSum]);
 
   if (productArr) {
     return (
@@ -76,7 +88,7 @@ const CartPage = () => {
             })}
         </Grid>
         <Grid item xs={4}>
-          <SummaryCart />
+          <SummaryCart totalSum={totalSum ? totalSum : 0} totalItems={totalItems ? totalItems : 0} />
         </Grid>
       </Grid>
     );

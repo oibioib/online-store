@@ -49,3 +49,8 @@ export type storeItem = {
 export interface ICartProducts extends Product {
   index: number;
 }
+
+export interface ISummaryCart {
+  totalSum: number;
+  totalItems: number;
+}

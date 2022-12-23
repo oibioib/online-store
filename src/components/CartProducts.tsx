@@ -18,6 +18,7 @@ const CartProducts = (props: ICartProducts) => {
     setQuantity(curQuantity);
     if (props.id) {
       localStorage.setItem(key, JSON.stringify({ ...store, [props.id]: curQuantity }));
+      window.dispatchEvent(new Event('build'));
     }
   };
 
@@ -33,6 +34,7 @@ const CartProducts = (props: ICartProducts) => {
       window.dispatchEvent(new Event('build'));
     } else if (props.id) {
       localStorage.setItem(key, JSON.stringify({ ...store, [props.id]: curQuantity }));
+      window.dispatchEvent(new Event('build'));
     }
   };
   return (
