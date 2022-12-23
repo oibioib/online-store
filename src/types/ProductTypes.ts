@@ -1,13 +1,3 @@
-// TODO
-export enum ApiSettings {
-  Url = 'https://dummyjson.com/',
-  ProductsLimit = 100,
-}
-
-export enum ApiEndpoints {
-  Products = 'products',
-}
-
 export enum ProductDetailsLabels {
   Description = 'Description',
   DiscountPercentage = 'Discount',

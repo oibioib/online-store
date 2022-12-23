@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import Image from 'mui-image';
 import { getProduct } from '../services/ProductsApi';
-import { Product } from '../types/Types';
+import { Product } from '../types/ProductTypes';
 
 const DescriptionItem = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',

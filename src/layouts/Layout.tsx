@@ -11,7 +11,7 @@ import { Container } from '@mui/system';
 function Layout() {
   return (
     <ThemeProvider theme={muiThemeSettings}>
-      <Container maxWidth="lg">
+      <Container maxWidth="xl">
         <Grid
           container
           justifyContent="center"
