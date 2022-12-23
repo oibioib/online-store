@@ -4,47 +4,63 @@ import { useEffect, useState } from 'react';
 import { getProduct } from '../services/ProductsApi';
 import CartHeader from '../components/CartHeader';
 import CartProducts from '../components/CartProducts';
-import { useLocation } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
+import SummaryCart from '../components/SummaryCart';
 
 const CartPage = () => {
+  ////////////////
+  const key = 'OA_cart';
+  const [store, setStore] = useState<string>(() => {
+    return JSON.parse(localStorage?.getItem(key) || '{}');
+  });
   const [productArr, setProductArr] = useState<Product[]>();
   const location = useLocation()?.search;
+  const navigate = useNavigate();
   const urlParams = new URLSearchParams(location);
-  let limitURL = '';
-  let pageURL = '';
+  let limitParam = '';
+  let pageParam = '';
   if (urlParams.get('limit') != null) {
-    limitURL = urlParams.get('limit') as string;
+    limitParam = urlParams.get('limit') as string;
   }
 
   if (urlParams.get('page') != null) {
-    pageURL = urlParams.get('page') as string;
+    pageParam = urlParams.get('page') as string;
   }
-  const page = pageURL ? +pageURL : 1;
-  const itemPerPage = limitURL ? +limitURL : ProductPerPage.perPage;
+  const page = pageParam ? +pageParam : 1;
+  const itemPerPage = limitParam ? +limitParam : ProductPerPage.perPage;
+
+  window.addEventListener('build', () => {
+    setStore(JSON.parse(localStorage?.getItem(key) || '{}'));
+    if (productArr && productArr?.length - 1 < +limitParam * +pageParam && +pageParam > 1) {
+      const newPath = location.replace(`page=${pageParam}`, `page=${(+pageParam - 1).toString()}`);
+      navigate(newPath);
+    }
+  });
 
   useEffect(() => {
     (async () => {
       // Working with localStorage. Change in future
-      const key = 'OA_cart';
-      const store = JSON.parse(localStorage?.getItem(key) || '{}');
+
       const storeTempArr: storeItem[] = [];
       for (const [productId, value] of Object.entries<string>(store)) {
         storeTempArr.push({ id: +productId, quantity: +value });
       }
-
       //////////////////
       const productsToRender: Product[] = [];
       const result = await Promise.all(storeTempArr.map((item) => getProduct(item.id)));
       result.forEach((item) => {
         if (item) {
-          productsToRender.push({ ...item, quantity: store[item.id] });
+          productsToRender.push({ ...item, quantity: +store[item.id] });
         }
       });
       if (productsToRender.length) {
         setProductArr(productsToRender);
+      } else {
+        navigate('/cart');
+        setProductArr(undefined);
       }
     })();
-  }, []);
+  }, [store, navigate]);
 
   if (productArr) {
     return (
@@ -58,6 +74,9 @@ const CartPage = () => {
             .map((item, index) => {
               return <CartProducts key={item.id} {...item} index={index + (page - 1) * itemPerPage} />;
             })}
+        </Grid>
+        <Grid item xs={4}>
+          <SummaryCart />
         </Grid>
       </Grid>
     );

@@ -28,18 +28,18 @@ const ProductPage = () => {
   const key = 'OA_cart';
   const store = JSON.parse(localStorage?.getItem(key) || '{}');
 
-  function addToLocalStorage() {
-    if (id) {
-      localStorage.setItem(key, JSON.stringify({ ...store, [id]: 1 }));
-    }
-  }
-
   //////////////////////////
 
   function handleClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     event.preventDefault();
     const clickedURL = event.target as HTMLImageElement;
     setImageUrl(`${clickedURL.src}`);
+  }
+
+  function addToLocalStorage() {
+    if (id) {
+      localStorage.setItem(key, JSON.stringify({ ...store, [id]: 1 }));
+    }
   }
 
   useEffect(() => {

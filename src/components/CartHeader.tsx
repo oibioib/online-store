@@ -19,7 +19,6 @@ const CartHeader = (props: ICartHeader) => {
   const page = pageParam ? +pageParam : 1;
   let curPage = page;
   const limit = limitParam ? +limitParam : ProductPerPage.perPage;
-
   const navigate = useNavigate();
   function onChangeHandler(event: React.ChangeEvent<HTMLInputElement>) {
     let newPath = location;

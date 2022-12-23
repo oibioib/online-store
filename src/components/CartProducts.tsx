@@ -1,8 +1,40 @@
 import Image from 'mui-image';
 import { Grid, Box, Button } from '@mui/material';
 import { ProductDetailsLabels, ICartProducts } from '../types/Types';
+import { useState } from 'react';
 
 const CartProducts = (props: ICartProducts) => {
+  //////// Working with local storage
+  const key = 'OA_cart';
+  const store = JSON.parse(localStorage?.getItem(key) || '{}');
+
+  ////////////////
+  const [quantity, setQuantity] = useState(props.quantity);
+  let curQuantity = quantity;
+  const onClickRiseHandler = () => {
+    if (curQuantity && curQuantity < props.stock) {
+      curQuantity++;
+    }
+    setQuantity(curQuantity);
+    if (props.id) {
+      localStorage.setItem(key, JSON.stringify({ ...store, [props.id]: curQuantity }));
+    }
+  };
+
+  const onClickDecreaseHandler = () => {
+    if (curQuantity && curQuantity >= 0) {
+      curQuantity--;
+    }
+    setQuantity(curQuantity);
+    if (curQuantity === 0) {
+      const tempObj = store;
+      delete tempObj[`${props.id}`];
+      localStorage.setItem(key, JSON.stringify({ ...tempObj }));
+      window.dispatchEvent(new Event('build'));
+    } else if (props.id) {
+      localStorage.setItem(key, JSON.stringify({ ...store, [props.id]: curQuantity }));
+    }
+  };
   return (
     <Grid container sx={{ display: 'flex', justifyContent: 'space-between', marginTop: '2rem' }}>
       <Grid item xs={1}>
@@ -29,13 +61,13 @@ const CartProducts = (props: ICartProducts) => {
           {ProductDetailsLabels.Stock}:{props.stock}
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Button>+</Button>
-          <Box>{props.quantity}</Box>
-          <Button>-</Button>
+          <Button onClick={onClickRiseHandler}>+</Button>
+          <Box>{quantity}</Box>
+          <Button onClick={onClickDecreaseHandler}>-</Button>
         </Box>
         <Box>
           {ProductDetailsLabels.Currency}
-          {props.quantity && props.quantity * props.price}.00
+          {quantity && quantity * props.price}.00
         </Box>
       </Grid>
     </Grid>
