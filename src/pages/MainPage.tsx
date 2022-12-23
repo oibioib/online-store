@@ -15,17 +15,20 @@ const MainPage = () => {
 
   const [products, setProducts] = useState<Product[]>([]);
   const [view, setView] = useState<string>(ViewParams.Default);
-
   const [params, setParams] = useSearchParams();
 
   const viewParam = params.get(CatalogParams.View);
+  console.log('MainPage - viewParam', viewParam);
 
   useEffect(() => {
     setProducts(productsAll);
   }, [productsAll]);
 
   useEffect(() => {
-    viewParam ? setView(viewParam) : null;
+    if (viewParam) {
+      const viewParamsList: string[] = Object.values(ViewParams);
+      viewParamsList.includes(viewParam) ? setView(viewParam) : setView(ViewParams.Default);
+    }
   }, [viewParam]);
 
   const productsToRender = products.map((item) => {
