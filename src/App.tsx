@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { Product } from './types/ProductTypes';
 import { getProducts } from './services/ProductsApi';
 import { productsContext } from './Context/Context';
+import CssBaseline from '@mui/material/CssBaseline';
 
 function App() {
   const [products, setProducts] = useState<Product[]>([]);

@@ -1,6 +1,6 @@
 export enum ApiSettings {
   Url = 'https://dummyjson.com/',
-  ProductsLimit = 10,
+  ProductsLimit = 20,
 }
 
 export enum ApiEndpoints {
