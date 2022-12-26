@@ -1,25 +1,26 @@
 import { Box, Button, Input } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ProductPerPage } from '../types/Types';
+import { CartSettings } from '../types/Types';
 import { ICartHeader } from '../types/Types';
 
 const CartHeader = (props: ICartHeader) => {
   const location = useLocation()?.search;
-  const urlParams = new URLSearchParams(location);
+  const navigate = useNavigate();
+  const searchParams = new URLSearchParams(location);
+  // const [searchParams, setSearchParams] = useSearchParams();
   let limitParam = '';
   let pageParam = '';
   let itemPerPage: number;
-  if (urlParams.get('limit') != null) {
-    limitParam = urlParams.get('limit') as string;
+  if (searchParams.get('limit') != null) {
+    limitParam = searchParams.get('limit') as string;
   }
 
-  if (urlParams.get('page') != null) {
-    pageParam = urlParams.get('page') as string;
+  if (searchParams.get('page') != null) {
+    pageParam = searchParams.get('page') as string;
   }
   const page = pageParam ? +pageParam : 1;
   let curPage = page;
-  const limit = limitParam ? +limitParam : ProductPerPage.perPage;
-  const navigate = useNavigate();
+  const limit = limitParam ? +limitParam : CartSettings.perPage;
   function onChangeHandler(event: React.ChangeEvent<HTMLInputElement>) {
     let newPath = location;
     itemPerPage = +event.target.value;
@@ -30,6 +31,8 @@ const CartHeader = (props: ICartHeader) => {
       newPath = location.replace(`limit=${limitParam}`, `limit=${itemPerPage.toString()}`);
     } else newPath += `limit=${itemPerPage.toString()}`;
     navigate(newPath);
+    // searchParams.set({ limit: event.target.value });
+    // setSearchParams([['limit', event.target.value]]);
   }
 
   function onBackHandler(): void {
@@ -43,6 +46,7 @@ const CartHeader = (props: ICartHeader) => {
         newPath = location.replace(`page=${pageParam}`, `page=${curPage.toString()}`);
       } else newPath += `page=${curPage.toString()}`;
       navigate(newPath);
+      // setSearchParams([['page', curPage.toString()]]);
     }
   }
 

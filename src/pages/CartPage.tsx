@@ -1,11 +1,12 @@
 import { Grid } from '@mui/material';
-import { Product, ProductPerPage, storeItem } from '../types/Types';
+import { Product, CartSettings, storeItem } from '../types/Types';
 import { useEffect, useState } from 'react';
 import { getProduct } from '../services/ProductsApi';
 import CartHeader from '../components/CartHeader';
 import CartProducts from '../components/CartProducts';
-import { useLocation, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 import SummaryCart from '../components/SummaryCart';
+import { useSearchParams } from 'react-router-dom';
 
 const CartPage = () => {
   ////////////////
@@ -26,26 +27,30 @@ const CartPage = () => {
     }
     return 0;
   }, 0);
-  const location = useLocation()?.search;
+  // const location = useLocation()?.search;
   const navigate = useNavigate();
-  const urlParams = new URLSearchParams(location);
+  // const searchParams = new URLSearchParams(location);
+
+  const [searchParams, setSearchParams] = useSearchParams();
   let limitParam = '';
   let pageParam = '';
-  if (urlParams.get('limit') != null) {
-    limitParam = urlParams.get('limit') as string;
+  if (searchParams.get('limit') != null) {
+    limitParam = searchParams.get('limit') as string;
   }
 
-  if (urlParams.get('page') != null) {
-    pageParam = urlParams.get('page') as string;
+  if (searchParams.get('page') != null) {
+    pageParam = searchParams.get('page') as string;
   }
   const page = pageParam ? +pageParam : 1;
-  const itemPerPage = limitParam ? +limitParam : ProductPerPage.perPage;
+  const itemPerPage = limitParam ? +limitParam : CartSettings.perPage;
 
   window.addEventListener('build', () => {
     setStore(JSON.parse(localStorage?.getItem(key) || '{}'));
     if (productArr && productArr?.length - 1 < +limitParam * +pageParam && +pageParam > 1) {
-      const newPath = location.replace(`page=${pageParam}`, `page=${(+pageParam - 1).toString()}`);
-      navigate(newPath);
+      // const newPath = location.replace(`page=${pageParam}`, `page=${(+pageParam - 1).toString()}`);
+      // navigate(newPath);
+      const tempNewPath = { page: (+pageParam - 1).toString(), limit: limitParam };
+      setSearchParams(tempNewPath);
     }
   });
 

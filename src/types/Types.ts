@@ -8,7 +8,7 @@ export enum ApiEndpoints {
   Products = 'products',
 }
 
-export enum ProductPerPage {
+export enum CartSettings {
   perPage = 3,
 }
 

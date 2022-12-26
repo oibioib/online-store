@@ -7,8 +7,6 @@ const promoToTest = ['Rs-school', 'student1', 'student2'];
 ////////////////////Store #2
 const discountKeyToStore = 'OA_discount';
 
-console.log();
-
 const SummaryCart = (props: ISummaryCart) => {
   const [isPromo, setIsPromo] = useState<boolean[]>(promoToTest.map(() => false));
   const [implementedDiscount, setImplementedDiscount] = useState<string[]>(
