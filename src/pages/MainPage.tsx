@@ -148,8 +148,8 @@ const MainPage = () => {
       const key = searchField as keyof Product;
       return key in product ? product[key] : '';
     });
-
-    return productFileds.some((field) => field.toString().toLowerCase().includes(search));
+    // TODO remove field check while interface Product has quantity
+    return productFileds.some((field) => (field ? field.toString().toLowerCase().includes(search) : false));
   };
 
   const filterCb = (

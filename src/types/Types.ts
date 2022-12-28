@@ -11,7 +11,6 @@ export enum CartSettings {
   perPage = 3,
 }
 
-// >>>>>>> develop:src/types/Types.ts
 export enum ProductDetailsLabels {
   Description = 'Description',
   DiscountPercentage = 'Discount',
@@ -37,20 +36,20 @@ export type Product = {
   quantity?: number;
 };
 
-// export interface ICartHeader {
-//   length: number;
-// }
+export interface ICartHeader {
+  length: number;
+}
 
-// export type storeItem = {
-//   id: number;
-//   quantity: number;
-// };
+export type storeItem = {
+  id: number;
+  quantity: number;
+};
 
-// export interface ICartProducts extends Product {
-//   index: number;
-// }
+export interface ICartProducts extends Product {
+  index: number;
+}
 
-// export interface ISummaryCart {
-//   totalSum: number;
-//   totalItems: number;
-// }
+export interface ISummaryCart {
+  totalSum: number;
+  totalItems: number;
+}
