@@ -1,7 +1,7 @@
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { Checkbox, FormControlLabel, FormGroup, Grid, Typography } from '@mui/material';
 import { Product } from '../types/ProductTypes';
-import { productsContext } from '../context/Context';
+import { productsContext } from '../context/AppContext';
 import { useSearchParams } from 'react-router-dom';
 import { FilterCheckbox, filterDelimiter, FilterStringParams, FilterValue } from '../types/FilterTypes';
 

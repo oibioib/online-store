@@ -8,7 +8,7 @@ import { CircularProgress, ThemeProvider } from '@mui/material';
 import { Box } from '@mui/system';
 import muiThemeSettings from './theme/Theme';
 import { FilterCheckbox, FilterStringParams, FilterValue } from './types/FilterTypes';
-import { brandsContext, categoriesContext, productsContext } from './context/Context';
+import { brandsContext, categoriesContext, productsContext } from './context/AppContext';
 
 declare module '@mui/material/styles' {
   interface Palette {

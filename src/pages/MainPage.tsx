@@ -9,7 +9,7 @@ import { Box } from '@mui/system';
 
 import { ShoppingCartIcon } from '../theme/Icons';
 
-import { brandsContext, categoriesContext, productsContext } from '../context/Context';
+import { brandsContext, categoriesContext, productsContext } from '../context/AppContext';
 import ViewChange, { ViewParams } from '../components/ViewChange';
 import SortChange, { defaultSortCb, defaultSortId, sorts } from '../components/SortChange';
 import CopyToClipboard from '../components/CopyToClipboard';

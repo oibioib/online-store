@@ -1,7 +1,7 @@
 import { Box, Slider, Typography } from '@mui/material';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { productsContext } from '../context/Context';
+import { productsContext } from '../context/AppContext';
 import { filterDelimiter, FilterNumberParams } from '../types/FilterTypes';
 import { Product } from '../types/ProductTypes';
 
