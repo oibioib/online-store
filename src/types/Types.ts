@@ -8,6 +8,10 @@ export enum ApiEndpoints {
   Products = 'products',
 }
 
+export enum CartSettings {
+  perPage = 3,
+}
+
 export enum ProductDetailsLabels {
   Description = 'Description',
   DiscountPercentage = 'Discount',
@@ -30,4 +34,23 @@ export type Product = {
   thumbnail: string;
   discountPercentage: number;
   category: string;
+  quantity?: number;
 };
+
+export interface ICartHeader {
+  length: number;
+}
+
+export type storeItem = {
+  id: number;
+  quantity: number;
+};
+
+export interface ICartProducts extends Product {
+  index: number;
+}
+
+export interface ISummaryCart {
+  totalSum: number;
+  totalItems: number;
+}

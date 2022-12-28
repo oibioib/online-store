@@ -6,6 +6,7 @@ import { styled } from '@mui/material/styles';
 import Image from 'mui-image';
 import { getProduct } from '../services/ProductsApi';
 import { Product } from '../types/Types';
+import { ProductDetailsLabels } from '../types/Types';
 
 const DescriptionItem = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -17,19 +18,28 @@ const DescriptionItem = styled(Paper)(({ theme }) => ({
   marginTop: '0.5rem',
 }));
 
-let state = false;
-
 const ProductPage = () => {
-  const id = useParams().id;
+  const id: string | undefined = useParams().id;
   const navigate = useNavigate();
   const [product, setProduct] = useState<Product>();
   const [imageUrl, setImageUrl] = useState<string>();
 
+  //Get the name from theme Experimental work with cart
+  const key = 'OA_cart';
+  const store = JSON.parse(localStorage?.getItem(key) || '{}');
+
+  //////////////////////////
+
   function handleClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     event.preventDefault();
-    state = true;
     const clickedURL = event.target as HTMLImageElement;
     setImageUrl(`${clickedURL.src}`);
+  }
+
+  function addToLocalStorage() {
+    if (id) {
+      localStorage.setItem(key, JSON.stringify({ ...store, [id]: 1 }));
+    }
   }
 
   useEffect(() => {
@@ -41,6 +51,7 @@ const ProductPage = () => {
         const result = await getProduct(+id);
         if (result) {
           setProduct(result);
+          setImageUrl(result.images[0]);
         }
       })();
     }
@@ -54,29 +65,22 @@ const ProductPage = () => {
             <Box component="div" sx={{ p: 2, display: 'flex', justifyContent: 'center' }} role="presentation">
               <Breadcrumbs aria-label="breadcrumb">
                 <Link to="/">Store</Link>
-                <Link to="/">{product?.brand}</Link>
-                <Link to="/">{product?.category}</Link>
-                <Typography color="text.primary">{product?.title}</Typography>
+                <Link to="/">{product.brand}</Link>
+                <Link to="/">{product.category}</Link>
+                <Typography color="text.primary">{product.title}</Typography>
               </Breadcrumbs>
             </Box>
           </Grid>
-          <Grid
-            item
-            xs={12}
-            container
-            spacing={2}
-            sx={{ border: 'solid black 1px', borderRadius: '1rem', margin: '2rem 3rem' }}>
+          <Grid item xs={12} container spacing={2} sx={{ border: 'solid black 1px', margin: '2rem 3rem' }}>
             <Grid item xs={12}>
-              <Box>{product?.title}</Box>
+              <Box>{product.title}</Box>
             </Grid>
             <Grid item xs={2} md={1}>
               <Box onClick={handleClick}>
                 {}
                 <ImageList cols={1}>
-                  {product?.images.map((item) => (
-                    <ImageListItem
-                      sx={{ marginTop: '0.5rem', border: 'solid black 1px', borderRadius: '4px' }}
-                      key={item}>
+                  {product.images.map((item) => (
+                    <ImageListItem sx={{ marginTop: '0.5rem', border: 'solid black 1px' }} key={item}>
                       <img src={`${item}`} srcSet={`${item}`} alt={item} loading="lazy" />
                     </ImageListItem>
                   ))}
@@ -85,39 +89,41 @@ const ProductPage = () => {
             </Grid>
             <Grid item xs={3} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
               <Box>
-                <Image src={`${!state ? product?.images[0] : imageUrl}`} alt={`${product?.title}`} />
+                <Image src={`${imageUrl}`} alt={`${product.title}`} />
               </Box>
             </Grid>
             <Grid item xs={4} md={5}>
               <DescriptionItem>
-                <div>Description:</div>
-                <div>{product?.description}</div>
+                <div>{ProductDetailsLabels.Description}</div>
+                <div>{product.description}</div>
               </DescriptionItem>
               <DescriptionItem>
-                <div>Discount Percentage:</div>
-                <div>{product?.discountPercentage}</div>
+                <div>{ProductDetailsLabels.DiscountPercentage}</div>
+                <div>{product.discountPercentage}</div>
               </DescriptionItem>
               <DescriptionItem>
-                <div>Rating:</div>
-                <div>{product?.rating}</div>
+                <div>{ProductDetailsLabels.Rating}</div>
+                <div>{product.rating}</div>
               </DescriptionItem>
               <DescriptionItem>
-                <div>Stock:</div>
-                <div>{product?.stock}</div>
+                <div>{ProductDetailsLabels.Stock}</div>
+                <div>{product.stock}</div>
               </DescriptionItem>
               <DescriptionItem>
-                <div>Brand:</div>
-                <div>{product?.brand}</div>
+                <div>{ProductDetailsLabels.Brand}</div>
+                <div>{product.brand}</div>
               </DescriptionItem>
               <DescriptionItem>
-                <div>Category:</div>
-                <div>{product?.category}</div>
+                <div>{ProductDetailsLabels.Category}</div>
+                <div>{product.category}</div>
               </DescriptionItem>
             </Grid>
             <Grid item xs={3} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
               <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                <div>euro: {product?.price}.00</div>
-                <Button sx={{ margin: '1rem' }} variant="contained" component={Link} to={'/product/26'}>
+                <div>
+                  {ProductDetailsLabels.Currency} {product.price}.00
+                </div>
+                <Button sx={{ margin: '1rem' }} variant="contained" onClick={addToLocalStorage}>
                   Add to cart
                 </Button>
                 <Button sx={{ margin: '1rem' }} variant="contained" component={Link} to={'/product/25'}>
