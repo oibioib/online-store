@@ -1,27 +1,3 @@
-export enum ApiSettings {
-  Url = 'https://dummyjson.com/',
-  ProductsLimit = 100,
-}
-
-export enum ApiEndpoints {
-  Products = 'products',
-}
-
-export enum CartSettings {
-  perPage = 3,
-}
-
-// >>>>>>> develop:src/types/Types.ts
-export enum ProductDetailsLabels {
-  Description = 'Description',
-  DiscountPercentage = 'Discount',
-  Rating = 'Rating',
-  Stock = 'Stock',
-  Brand = 'Brand',
-  Category = 'Category',
-  Currency = '€',
-}
-
 export type Product = {
   id: number;
   title: string;
@@ -37,20 +13,16 @@ export type Product = {
   quantity?: number;
 };
 
-// export interface ICartHeader {
-//   length: number;
-// }
+export interface ICartProducts extends Product {
+  index: number;
+}
 
-// export type storeItem = {
-//   id: number;
-//   quantity: number;
-// };
-
-// export interface ICartProducts extends Product {
-//   index: number;
-// }
-
-// export interface ISummaryCart {
-//   totalSum: number;
-//   totalItems: number;
-// }
+export enum ProductDetailsLabels {
+  Description = 'Description',
+  DiscountPercentage = 'Discount',
+  Rating = 'Rating',
+  Stock = 'Stock',
+  Brand = 'Brand',
+  Category = 'Category',
+  Currency = '€',
+}

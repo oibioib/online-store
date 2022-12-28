@@ -1,7 +1,7 @@
 import Image from 'mui-image';
 import { Grid, Box, Button } from '@mui/material';
-import { ProductDetailsLabels, ICartProducts } from '../types/Types';
 import { useState } from 'react';
+import { ICartProducts, ProductDetailsLabels } from '../types/ProductTypes';
 
 const CartProducts = (props: ICartProducts) => {
   //////// Working with local storage

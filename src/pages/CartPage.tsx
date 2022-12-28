@@ -1,5 +1,5 @@
 import { Grid } from '@mui/material';
-import { Product, CartSettings, storeItem } from '../types/Types';
+// import { Product, CartSettings, storeItem } from '../types/Types';
 import { useEffect, useState } from 'react';
 import { getProduct } from '../services/ProductsApi';
 import CartHeader from '../components/CartHeader';
@@ -7,6 +7,8 @@ import CartProducts from '../components/CartProducts';
 import { useNavigate } from 'react-router';
 import SummaryCart from '../components/SummaryCart';
 import { useSearchParams } from 'react-router-dom';
+import { Product } from '../types/ProductTypes';
+import { CartSettings, storeItem } from '../types/CartTypes';
 
 const CartPage = () => {
   ////////////////
