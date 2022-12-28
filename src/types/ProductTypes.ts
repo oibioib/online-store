@@ -21,14 +21,3 @@ export type Product = {
   discountPercentage: number;
   category: string;
 };
-
-export const searchFields = [
-  'title',
-  'description',
-  'price',
-  'brand',
-  'rating',
-  'stock',
-  'discountPercentage',
-  'category',
-];
