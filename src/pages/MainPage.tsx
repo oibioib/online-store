@@ -1,50 +1,52 @@
 import { useContext, useEffect, useMemo, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link as LinkRouter, useSearchParams } from 'react-router-dom';
 
 import { Product, ProductDetailsLabels } from '../types/ProductTypes';
-import { CatalogParams, defaultSortCb, defaultSortId, SortParam, sorts, ViewParams } from '../types/CatalogTypes';
+import { CatalogParams } from '../types/CatalogTypes';
 
-import { Button, FormControl, Grid, MenuItem, Paper, Select, Typography } from '@mui/material';
+import { Button, Grid, Link as MuiLink, Paper, Typography } from '@mui/material';
 import { Box } from '@mui/system';
-import { SelectChangeEvent } from '@mui/material/Select';
-import TextField from '@mui/material/TextField';
 
-import {
-  ShoppingCartIcon,
-  ViewListRoundedIcon,
-  GridViewRoundedIcon,
-  ContentCopyIcon,
-  RestartAltIcon,
-  ContentCopyRoundedIcon,
-} from '../theme/Icons';
+import { ShoppingCartIcon } from '../theme/Icons';
 
-import { productsContext } from '../Context/Context';
-import Filter from '../components/Filter';
+import { brandsContext, categoriesContext, productsContext } from '../context/Context';
+import ViewChange, { ViewParams } from '../components/ViewChange';
+import SortChange, { defaultSortCb, defaultSortId, sorts } from '../components/SortChange';
+import CopyToClipboard from '../components/CopyToClipboard';
+import ResetFilters from '../components/ResetFilters';
+import Search from '../components/Search';
+import FilterWithCheckbox from '../components/FilterWithCheckbox';
+import FilterWithRangeSlider from '../components/FilterWithRangeSlider';
+import { filterDelimiter, FilterNumberParams, FilterStringParams, FilterValue } from '../types/FilterTypes';
 
 const MainPage = () => {
   const productsAll = useContext(productsContext);
+  const brandsAll = useContext(brandsContext);
+  const categoriesAll = useContext(categoriesContext);
 
+  const [isFirstLoad, setIsFirstLoad] = useState<boolean>(true);
+  const [canCopyUrlToClipboard, setCanCopyUrlToClipboard] = useState<boolean>(true);
   const [products, setProducts] = useState<Product[]>([]);
-  const [view, setView] = useState<string>(ViewParams.Default);
+  const [view, setView] = useState<ViewParams>(ViewParams.Default);
   const [sort, setSort] = useState<number>(defaultSortId);
   const [search, setSearch] = useState<string>('');
-  const [canCopyUrlToClipboard, setCanCopyUrlToClipboard] = useState<boolean>(true);
+  const [brands, setBrands] = useState<number[]>([]);
+  const [categories, setCategories] = useState<number[]>([]);
+  const [price, setPrice] = useState<number[]>([0, 1000000]);
+  const [stock, setStock] = useState<number[]>([0, 1000000]);
 
-  const [params, setParams] = useSearchParams();
-  const viewParam = params.get(CatalogParams.View);
-  const sortParam = params.get(CatalogParams.Sort);
-  const searchParam = params.get(CatalogParams.Search);
-
-  const memoSorts = useMemo(() => {
-    return sorts.map((item) => (
-      <MenuItem key={item.id} value={item.id}>
-        {item.label}
-      </MenuItem>
-    ));
-  }, []);
+  const [urlParams, setUrlParams] = useSearchParams();
+  const viewParam = urlParams.get(CatalogParams.View) as ViewParams;
+  const sortParam = urlParams.get(CatalogParams.Sort);
+  const searchParam = urlParams.get(CatalogParams.Search);
+  const brandFilterParam = urlParams.get(FilterStringParams.Brand);
+  const categoryFilterParam = urlParams.get(FilterStringParams.Cat);
+  const priceFilterParam = urlParams.get(FilterNumberParams.Price);
+  const stockFilterParam = urlParams.get(FilterNumberParams.Stock);
 
   useEffect(() => {
     setProducts(productsAll);
+    setIsFirstLoad(false);
   }, [productsAll]);
 
   useEffect(() => {
@@ -71,51 +73,55 @@ const MainPage = () => {
     } else setSearch('');
   }, [searchParam]);
 
-  const viewChangeHandler = (viewClicked: ViewParams) => {
-    setView(viewClicked);
-    params.set(CatalogParams.View, viewClicked);
-    setParams(params);
-  };
+  useEffect(() => {
+    if (brandFilterParam) {
+      const brands = brandFilterParam.split(filterDelimiter).map((item) => +item);
+      setBrands(brands);
+    } else setBrands([]);
+  }, [brandFilterParam]);
 
-  const sortChangeHandler = (e: SelectChangeEvent<SortParam['id']>) => {
-    const clickValue = +e.target.value;
-    const sortSelected = sorts.find((item) => item.id === clickValue);
-    if (sortSelected) {
-      setSort(clickValue);
-      params.set(CatalogParams.Sort, sortSelected.value);
-      setParams(params);
+  useEffect(() => {
+    if (categoryFilterParam) {
+      const categories = categoryFilterParam.split(filterDelimiter).map((item) => +item);
+      setCategories(categories);
+    } else setCategories([]);
+  }, [categoryFilterParam]);
+
+  useEffect(() => {
+    if (priceFilterParam) {
+      const prices = priceFilterParam.split(filterDelimiter).map((item) => +item);
+      setPrice(prices);
     }
-  };
+  }, [priceFilterParam]);
 
-  const searchChangeHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const searchValue = e.target.value;
-    setSearch(searchValue);
-    searchValue ? params.set(CatalogParams.Search, searchValue) : params.delete(CatalogParams.Search);
-    setParams(params);
-  };
-
-  const copyUrlToClipboardHandler = async () => {
-    if (canCopyUrlToClipboard) {
-      setCanCopyUrlToClipboard(false);
-      const url = window.location.href;
-      await navigator.clipboard.writeText(url);
-      setTimeout(() => {
-        setCanCopyUrlToClipboard(true);
-      }, 800);
+  useEffect(() => {
+    if (stockFilterParam) {
+      const stocks = stockFilterParam.split(filterDelimiter).map((item) => +item);
+      setStock(stocks);
     }
-  };
+  }, [stockFilterParam]);
 
-  const resetSearchParamsHandler = () => {
-    const pageParams = [CatalogParams.Search, CatalogParams.View, CatalogParams.Sort];
+  const resetAppHandler = () => {
+    const pageParams = [
+      CatalogParams.Search,
+      CatalogParams.View,
+      CatalogParams.Sort,
+      FilterStringParams.Brand,
+      FilterStringParams.Cat,
+      FilterNumberParams.Price,
+      FilterNumberParams.Stock,
+    ];
     pageParams.forEach((param) => {
-      params.delete(param);
+      urlParams.delete(param);
     });
-    setParams(params);
-
     setView(ViewParams.Default);
     setSort(defaultSortId);
     setSearch('');
-    // setSelectedBrands([]);
+    setBrands([]);
+    setCategories([]);
+    setPrice([0, 1000000]);
+    setStock([0, 1000000]);
+    setUrlParams(urlParams);
   };
 
   const sortProductsCb = (a: Product, b: Product) => {
@@ -146,24 +152,59 @@ const MainPage = () => {
     return productFileds.some((field) => field.toString().toLowerCase().includes(search));
   };
 
-  const getProductsShown = (products: Product[]) => products.filter(searchProductsCb);
+  const filterCb = (
+    product: Product,
+    filterData: number[],
+    productFieldToFilter: Product['brand'],
+    allFilterItems: FilterValue[]
+  ) => {
+    if (!filterData.length) return true;
 
-  const productsToRender = getProductsShown(products)
-    .sort(sortProductsCb)
-    .map((item) => {
-      return view === ViewParams.Full ? (
-        <Grid item key={item.id} xs={12} sm={6} md={4}>
-          <Paper
-            elevation={5}
-            sx={{
-              '&:hover': {
-                boxShadow: 8,
-              },
-              mb: 2,
-              backgroundColor: 'white',
-              overflow: 'hidden',
-              height: '100%',
-            }}>
+    const key = productFieldToFilter as `${FilterStringParams}`;
+    const item = allFilterItems.find((item) => item.title === product[key]);
+
+    if (item) {
+      return filterData.includes(item.id);
+    }
+  };
+
+  const filterPriceCb = (product: Product) => {
+    const [min, max] = price;
+    return product.price >= min && product.price <= max;
+  };
+
+  const filterStockCb = (product: Product) => {
+    const [min, max] = stock;
+    return product.stock >= min && product.stock <= max;
+  };
+
+  const getProductsShown = (products: Product[]) =>
+    products
+      .filter(searchProductsCb)
+      .filter((product: Product) => filterCb(product, categories, FilterStringParams.Cat, categoriesAll))
+      .filter((product: Product) => filterCb(product, brands, FilterStringParams.Brand, brandsAll))
+      .filter(filterStockCb)
+      .filter(filterPriceCb);
+
+  const productsFiltered = useMemo(() => {
+    return getProductsShown(products);
+  }, [brands, categories, price, stock, search]);
+
+  const productsToRender = productsFiltered.sort(sortProductsCb).map((item) => {
+    return view === ViewParams.Full ? (
+      <Grid item key={item.id} xs={12} sm={6} md={4}>
+        <Paper
+          elevation={5}
+          sx={{
+            '&:hover': {
+              boxShadow: 8,
+            },
+            mb: 2,
+            backgroundColor: 'white',
+            overflow: 'hidden',
+            height: '100%',
+          }}>
+          <LinkRouter to={'/product/' + item.id}>
             <Box
               m={2}
               borderRadius={1}
@@ -175,53 +216,61 @@ const MainPage = () => {
                 boxShadow: 3,
               }}
             />
-            <Typography variant="h6" component="p" sx={{ m: 2 }}>
-              {item.title}
+          </LinkRouter>
+          <MuiLink
+            component={LinkRouter}
+            to={'/product/' + item.id}
+            variant="h6"
+            underline="hover"
+            color="black"
+            sx={{ m: 2, display: 'block' }}>
+            {item.title}
+          </MuiLink>
+          <Box>
+            <Typography gutterBottom variant="body2" component="p" sx={{ m: 0, lineHeight: 1.2 }}>
+              {ProductDetailsLabels.Brand}: {item.brand}
             </Typography>
-            <Box>
-              <Typography gutterBottom variant="body2" component="p" sx={{ m: 0, lineHeight: 1.2 }}>
-                {ProductDetailsLabels.Brand}: {item.brand}
-              </Typography>
-              <Typography gutterBottom variant="body2" component="p" sx={{ m: 0, lineHeight: 1.2 }}>
-                {ProductDetailsLabels.Category}: {item.category}
-              </Typography>
-              <Typography gutterBottom variant="body2" component="p" sx={{ m: 0, lineHeight: 1.2 }}>
-                {ProductDetailsLabels.Rating}: {item.rating}
-              </Typography>
-              <Typography gutterBottom variant="body2" component="p" sx={{ m: 0, lineHeight: 1.2 }}>
-                {ProductDetailsLabels.DiscountPercentage}: {item.discountPercentage}
-              </Typography>
-              <Typography gutterBottom variant="body2" component="p" sx={{ m: 0, lineHeight: 1.2 }}>
-                {ProductDetailsLabels.Stock}: {item.stock}
-              </Typography>
-            </Box>
-            <Typography gutterBottom variant="h5" component="div" sx={{ p: 1 }}>
-              {ProductDetailsLabels.Currency} {item.price}
+            <Typography gutterBottom variant="body2" component="p" sx={{ m: 0, lineHeight: 1.2 }}>
+              {ProductDetailsLabels.Category}: {item.category}
             </Typography>
-            <Grid container gap={1} justifyContent="center" alignItems="center">
-              <Button variant="contained" size="large" startIcon={<ShoppingCartIcon />}>
-                Add to cart
-              </Button>
-              <Button size="large" component={Link} to={'/product/' + item.id}>
-                Details
-              </Button>
-            </Grid>
-          </Paper>
-        </Grid>
-      ) : (
-        <Grid item key={item.id} xs={12}>
-          <Paper
-            elevation={5}
-            sx={{
-              '&:hover': {
-                boxShadow: 8,
-              },
-              mb: 0,
-              backgroundColor: 'white',
-              overflow: 'hidden',
-            }}>
-            <Grid container spacing={{ xs: 2 }} sx={{ p: 2 }} columns={{ xs: 2 }}>
-              <Grid item>
+            <Typography gutterBottom variant="body2" component="p" sx={{ m: 0, lineHeight: 1.2 }}>
+              {ProductDetailsLabels.Rating}: {item.rating}
+            </Typography>
+            <Typography gutterBottom variant="body2" component="p" sx={{ m: 0, lineHeight: 1.2 }}>
+              {ProductDetailsLabels.DiscountPercentage}: {item.discountPercentage}
+            </Typography>
+            <Typography gutterBottom variant="body2" component="p" sx={{ m: 0, lineHeight: 1.2 }}>
+              {ProductDetailsLabels.Stock}: {item.stock}
+            </Typography>
+          </Box>
+          <Typography gutterBottom variant="h5" component="div" sx={{ p: 1 }}>
+            {ProductDetailsLabels.Currency} {item.price}
+          </Typography>
+          <Grid container gap={1} justifyContent="center" alignItems="center">
+            <Button variant="contained" size="large" startIcon={<ShoppingCartIcon />}>
+              Add to cart
+            </Button>
+            <Button size="large" component={LinkRouter} to={'/product/' + item.id}>
+              Details
+            </Button>
+          </Grid>
+        </Paper>
+      </Grid>
+    ) : (
+      <Grid item key={item.id} xs={12}>
+        <Paper
+          elevation={5}
+          sx={{
+            '&:hover': {
+              boxShadow: 8,
+            },
+            mb: 0,
+            backgroundColor: 'white',
+            overflow: 'hidden',
+          }}>
+          <Grid container spacing={{ xs: 2 }} sx={{ p: 2 }} columns={{ xs: 2 }}>
+            <Grid item>
+              <LinkRouter to={'/product/' + item.id}>
                 <Box
                   borderRadius={1}
                   sx={{
@@ -233,145 +282,152 @@ const MainPage = () => {
                     boxShadow: 3,
                   }}
                 />
-              </Grid>
-              <Grid container item xs gap={1}>
-                <Grid item>
-                  <Grid container direction="column">
-                    <Grid item sx={{ textAlign: 'left' }}>
-                      <Typography variant="h6" component="p" sx={{ mb: 0 }}>
-                        {item.title}
-                      </Typography>
-                    </Grid>
-                    <Grid item sx={{ textAlign: 'left' }}>
-                      <Grid container spacing={1}>
-                        <Grid item>
-                          <Typography gutterBottom variant="body2" component="span" sx={{ m: 0, lineHeight: 1.2 }}>
-                            {ProductDetailsLabels.Brand}: {item.brand}
-                          </Typography>
-                        </Grid>
-                        <Grid item>
-                          {' '}
-                          <Typography gutterBottom variant="body2" component="span" sx={{ m: 0, lineHeight: 1.2 }}>
-                            {ProductDetailsLabels.Category}: {item.category}
-                          </Typography>
-                        </Grid>
-                        <Grid item>
-                          <Typography gutterBottom variant="body2" component="span" sx={{ m: 0, lineHeight: 1.2 }}>
-                            {ProductDetailsLabels.Rating}: {item.rating}
-                          </Typography>
-                        </Grid>
-                        <Grid item>
-                          <Typography gutterBottom variant="body2" component="span" sx={{ m: 0, lineHeight: 1.2 }}>
-                            {ProductDetailsLabels.DiscountPercentage}: {item.discountPercentage}
-                          </Typography>
-                        </Grid>
-                        <Grid item>
-                          <Typography gutterBottom variant="body2" component="span" sx={{ m: 0, lineHeight: 1.2 }}>
-                            {ProductDetailsLabels.Stock}: {item.stock}
-                          </Typography>
-                        </Grid>
+              </LinkRouter>
+            </Grid>
+            <Grid container item xs gap={1}>
+              <Grid item>
+                <Grid container direction="column">
+                  <Grid item sx={{ textAlign: 'left' }}>
+                    <MuiLink
+                      component={LinkRouter}
+                      to={'/product/' + item.id}
+                      variant="h6"
+                      underline="hover"
+                      color="black"
+                      sx={{ m: 0, display: 'block' }}>
+                      {item.title}
+                    </MuiLink>
+                    {/* <Typography variant="h6" component="p" sx={{ mb: 0 }}>
+                      {item.title}
+                    </Typography> */}
+                  </Grid>
+                  <Grid item sx={{ textAlign: 'left' }}>
+                    <Grid container spacing={1}>
+                      <Grid item>
+                        <Typography gutterBottom variant="body2" component="span" sx={{ m: 0, lineHeight: 1.2 }}>
+                          {ProductDetailsLabels.Brand}: {item.brand}
+                        </Typography>
+                      </Grid>
+                      <Grid item>
+                        {' '}
+                        <Typography gutterBottom variant="body2" component="span" sx={{ m: 0, lineHeight: 1.2 }}>
+                          {ProductDetailsLabels.Category}: {item.category}
+                        </Typography>
+                      </Grid>
+                      <Grid item>
+                        <Typography gutterBottom variant="body2" component="span" sx={{ m: 0, lineHeight: 1.2 }}>
+                          {ProductDetailsLabels.Rating}: {item.rating}
+                        </Typography>
+                      </Grid>
+                      <Grid item>
+                        <Typography gutterBottom variant="body2" component="span" sx={{ m: 0, lineHeight: 1.2 }}>
+                          {ProductDetailsLabels.DiscountPercentage}: {item.discountPercentage}
+                        </Typography>
+                      </Grid>
+                      <Grid item>
+                        <Typography gutterBottom variant="body2" component="span" sx={{ m: 0, lineHeight: 1.2 }}>
+                          {ProductDetailsLabels.Stock}: {item.stock}
+                        </Typography>
                       </Grid>
                     </Grid>
-                    <Grid item sx={{ textAlign: 'left' }}>
-                      <Typography gutterBottom variant="h5" component="div" sx={{ mt: 1 }}>
-                        {ProductDetailsLabels.Currency} {item.price}
-                      </Typography>
-                    </Grid>
+                  </Grid>
+                  <Grid item sx={{ textAlign: 'left' }}>
+                    <Typography gutterBottom variant="h5" component="div" sx={{ mt: 1 }}>
+                      {ProductDetailsLabels.Currency} {item.price}
+                    </Typography>
                   </Grid>
                 </Grid>
-                <Grid container item xs alignItems="center">
-                  <Grid container gap={1} justifyContent="flex-end" alignItems="center">
-                    <Button variant="contained" startIcon={<ShoppingCartIcon />}>
-                      Add to cart
-                    </Button>
-                    <Button component={Link} to={'/product/' + item.id}>
-                      Details
-                    </Button>
-                  </Grid>
+              </Grid>
+              <Grid container item xs alignItems="center">
+                <Grid container gap={1} justifyContent="flex-end" alignItems="center">
+                  <Button variant="contained" startIcon={<ShoppingCartIcon />}>
+                    Add to cart
+                  </Button>
+                  <Button component={LinkRouter} to={'/product/' + item.id}>
+                    Details
+                  </Button>
                 </Grid>
               </Grid>
             </Grid>
-          </Paper>
-        </Grid>
-      );
-    });
+          </Grid>
+        </Paper>
+      </Grid>
+    );
+  });
 
   return (
     <Grid container>
       <Grid container item spacing={2}>
         <Grid item container xs={3} direction="column">
           <Grid item mb={2}>
-            <Button
-              startIcon={canCopyUrlToClipboard ? <ContentCopyIcon /> : <ContentCopyRoundedIcon />}
-              size="large"
-              onClick={copyUrlToClipboardHandler}>
-              {canCopyUrlToClipboard ? 'Copy' : 'Copied!'}
-            </Button>
-            <Button startIcon={<RestartAltIcon />} size="large" onClick={resetSearchParamsHandler}>
-              Reset
-            </Button>
+            <CopyToClipboard
+              canCopyUrlToClipboard={canCopyUrlToClipboard}
+              setCanCopyUrlToClipboard={setCanCopyUrlToClipboard}
+            />
+            <ResetFilters resetAppHandler={resetAppHandler} />
           </Grid>
           <Grid item>
-            <Filter allProducts={products} />
+            <>
+              <FilterWithCheckbox
+                filterName={FilterStringParams.Brand}
+                productsFiltered={productsFiltered}
+                filterData={brandsAll}
+              />
+              <FilterWithCheckbox
+                filterName={FilterStringParams.Cat}
+                productsFiltered={productsFiltered}
+                filterData={categoriesAll}
+              />
+              <FilterWithRangeSlider filterName={FilterNumberParams.Price} productsFiltered={productsFiltered} />
+              <FilterWithRangeSlider filterName={FilterNumberParams.Stock} productsFiltered={productsFiltered} />
+            </>
           </Grid>
         </Grid>
         <Grid item xs={9}>
-          {/* right */}
           <Grid container item>
             <Grid container item spacing={{ xs: 2, md: 3 }} alignItems="center" justifyContent="space-between" mb={2}>
               <Grid item>
-                <FormControl fullWidth>
-                  <Select id="sort-select" value={sort} onChange={sortChangeHandler} size="small">
-                    {memoSorts}
-                  </Select>
-                </FormControl>
+                <SortChange sort={sort} setSort={setSort} />
               </Grid>
               <Grid item>
-                <FormControl fullWidth>
-                  <TextField
-                    id="search"
-                    value={search}
-                    variant="outlined"
-                    onChange={searchChangeHandler}
-                    size="small"
-                  />
-                </FormControl>
+                <Search search={search} setSearch={setSearch} />
               </Grid>
-              <Grid item>Products: {productsToRender.length}</Grid>
               <Grid item>
-                <Button size="large" sx={{ minWidth: 'unset' }} onClick={() => viewChangeHandler(ViewParams.Short)}>
-                  <ViewListRoundedIcon />
-                </Button>
-                <Button size="large" sx={{ minWidth: 'unset' }} onClick={() => viewChangeHandler(ViewParams.Full)}>
-                  <GridViewRoundedIcon />
-                </Button>
+                <Typography color="primary" fontWeight="bold">
+                  Products: {productsToRender.length}
+                </Typography>
+              </Grid>
+              <Grid item>
+                <ViewChange view={view} setView={setView} />
               </Grid>
             </Grid>
           </Grid>
           <Grid container item spacing={{ xs: 2 }}>
-            {productsToRender.length ? (
-              productsToRender
-            ) : (
-              <Grid item xs>
-                <Paper
-                  elevation={5}
-                  sx={{
-                    '&:hover': {
-                      boxShadow: 8,
-                    },
-                    mb: 0,
-                    backgroundColor: 'white',
-                    minHeight: 250,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  <Typography variant="h6" component="span">
-                    Ups! No product founded
-                  </Typography>
-                </Paper>
-              </Grid>
-            )}
+            {!isFirstLoad ? (
+              productsToRender.length ? (
+                productsToRender
+              ) : (
+                <Grid item xs>
+                  <Paper
+                    elevation={5}
+                    sx={{
+                      '&:hover': {
+                        boxShadow: 8,
+                      },
+                      mb: 0,
+                      backgroundColor: 'white',
+                      minHeight: 250,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    <Typography variant="h6" component="span">
+                      Ups! No product founded
+                    </Typography>
+                  </Paper>
+                </Grid>
+              )
+            ) : null}
           </Grid>
         </Grid>
       </Grid>
