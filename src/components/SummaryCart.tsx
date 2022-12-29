@@ -1,6 +1,8 @@
 import { Box, Button, Input } from '@mui/material';
-import { ISummaryCart, ProductDetailsLabels } from '../types/Types';
+// import { ISummaryCart, ProductDetailsLabels } from '../types/Types';
 import { useState } from 'react';
+import { ISummaryCart } from '../types/CartTypes';
+import { ProductDetailsLabels } from '../types/ProductTypes';
 
 //////////ToDo move to settings
 const promoToTest = ['Rs-school', 'student1', 'student2'];

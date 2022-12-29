@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { ApiEndpoints, ApiSettings, Product } from '../types/Types';
+import { ApiEndpoints, ApiSettings } from '../types/ApiTypes';
+import { Product } from '../types/ProductTypes';
 
 export async function getProducts(limit: number = ApiSettings.ProductsLimit): Promise<Product[] | undefined> {
   try {
@@ -9,6 +10,7 @@ export async function getProducts(limit: number = ApiSettings.ProductsLimit): Pr
   } catch (error) {
     if (error instanceof Error) {
       console.log('Error', error.message);
+      throw error;
     }
   }
 }
@@ -20,6 +22,7 @@ export async function getProduct(id: Product['id']): Promise<Product | undefined
   } catch (error) {
     if (error instanceof Error) {
       console.log('Error', error.message);
+      return undefined;
     }
   }
 }

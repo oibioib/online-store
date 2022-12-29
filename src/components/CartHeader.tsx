@@ -1,7 +1,6 @@
 import { Box, Button, Input } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { CartSettings } from '../types/Types';
-import { ICartHeader } from '../types/Types';
+import { CartSettings, ICartHeader } from '../types/CartTypes';
 
 const CartHeader = (props: ICartHeader) => {
   const location = useLocation()?.search;
