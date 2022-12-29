@@ -6,6 +6,7 @@ import { styled } from '@mui/material/styles';
 import Image from 'mui-image';
 import { getProduct } from '../services/ProductsApi';
 import { Product, ProductDetailsLabels } from '../types/ProductTypes';
+import AddToCartButton from '../components/AddToCartButton';
 
 const DescriptionItem = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -24,8 +25,8 @@ const ProductPage = () => {
   const [imageUrl, setImageUrl] = useState<string>();
 
   //Get the name from theme Experimental work with cart
-  const key = 'OA_cart';
-  const store = JSON.parse(localStorage?.getItem(key) || '{}');
+  // const key = 'OA_cart';
+  // const store = JSON.parse(localStorage?.getItem(key) || '{}');
 
   //////////////////////////
 
@@ -35,11 +36,11 @@ const ProductPage = () => {
     setImageUrl(`${clickedURL.src}`);
   }
 
-  function addToLocalStorage() {
-    if (id) {
-      localStorage.setItem(key, JSON.stringify({ ...store, [id]: 1 }));
-    }
-  }
+  // function addToLocalStorage() {
+  //   if (id) {
+  //     localStorage.setItem(key, JSON.stringify({ ...store, [id]: 1 }));
+  //   }
+  // }
 
   useEffect(() => {
     if (id && +id === 101) {
@@ -122,9 +123,10 @@ const ProductPage = () => {
                 <div>
                   {ProductDetailsLabels.Currency} {product.price}.00
                 </div>
-                <Button sx={{ margin: '1rem' }} variant="contained" onClick={addToLocalStorage}>
+                {/* <Button sx={{ margin: '1rem' }} variant="contained" onClick={addToLocalStorage}>
                   Add to cart
-                </Button>
+                </Button> */}
+                <AddToCartButton id={id ? +id : 0} />
                 <Button sx={{ margin: '1rem' }} variant="contained" component={Link} to={'/product/25'}>
                   Buy now
                 </Button>
