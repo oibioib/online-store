@@ -5,3 +5,9 @@ import { Product } from '../types/ProductTypes';
 export const productsContext = createContext<Product[]>([]);
 export const brandsContext = createContext<FilterValue[]>([]);
 export const categoriesContext = createContext<FilterValue[]>([]);
+export const isModalContext = createContext({
+  isModal: false,
+  setIsModal: (props: boolean) => {
+    //do nothing
+  },
+});

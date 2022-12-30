@@ -14,8 +14,6 @@ const AddToCartButton = (props: AddToCartButton) => {
 
   //////////////////////////
 
-  console.log(productsInLocalStorageParsed);
-
   function addToLocalStorage() {
     if (props.id) {
       localStorage.setItem(key, JSON.stringify({ ...productsInLocalStorageParsed, [props.id]: 1 }));

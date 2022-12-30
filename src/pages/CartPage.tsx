@@ -1,6 +1,5 @@
-import { Grid } from '@mui/material';
-// import { Product, CartSettings, storeItem } from '../types/Types';
-import { useEffect, useState } from 'react';
+import { Grid, Modal, Typography, Box, Paper } from '@mui/material';
+import { useEffect, useState, useContext } from 'react';
 import { getProduct } from '../services/ProductsApi';
 import CartHeader from '../components/CartHeader';
 import CartProducts from '../components/CartProducts';
@@ -9,6 +8,20 @@ import SummaryCart from '../components/SummaryCart';
 import { useSearchParams } from 'react-router-dom';
 import { Product } from '../types/ProductTypes';
 import { CartSettings, storeItem } from '../types/CartTypes';
+import { isModalContext } from '../context/AppContext';
+import ModalCart from '../components/Modal';
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
 
 const CartPage = () => {
   ////////////////
@@ -45,14 +58,17 @@ const CartPage = () => {
   }
   const page = pageParam ? +pageParam : 1;
   const itemPerPage = limitParam ? +limitParam : CartSettings.perPage;
+  const { isModal, setIsModal } = useContext(isModalContext);
+  const handleClose = () => {
+    setIsModal(false);
+  };
 
   window.addEventListener('build', () => {
     setStore(JSON.parse(localStorage?.getItem(key) || '{}'));
     if (productArr && productArr?.length - 1 < +limitParam * +pageParam && +pageParam > 1) {
-      // const newPath = location.replace(`page=${pageParam}`, `page=${(+pageParam - 1).toString()}`);
-      // navigate(newPath);
       const tempNewPath = { page: (+pageParam - 1).toString(), limit: limitParam };
       setSearchParams(tempNewPath);
+      console.log('hop');
     }
   });
 
@@ -83,21 +99,32 @@ const CartPage = () => {
 
   if (productArr) {
     return (
-      <Grid container spacing={1}>
-        <Grid item xs={8}>
-          <CartHeader length={productArr.length} />
-          {productArr
-            .filter((_, index) => {
-              return index >= (page - 1) * itemPerPage && index < page * itemPerPage;
-            })
-            .map((item, index) => {
-              return <CartProducts key={item.id} {...item} index={index + (page - 1) * itemPerPage} />;
-            })}
+      <>
+        <Grid container spacing={1}>
+          <Grid item xs={8}>
+            <CartHeader length={productArr.length} />
+            {productArr
+              .filter((_, index) => {
+                return index >= (page - 1) * itemPerPage && index < page * itemPerPage;
+              })
+              .map((item, index) => {
+                return <CartProducts key={item.id} {...item} index={index + (page - 1) * itemPerPage} />;
+              })}
+          </Grid>
+          <Grid item xs={4}>
+            <SummaryCart totalSum={totalSum ? totalSum : 0} totalItems={totalItems ? totalItems : 0} />
+          </Grid>
         </Grid>
-        <Grid item xs={4}>
-          <SummaryCart totalSum={totalSum ? totalSum : 0} totalItems={totalItems ? totalItems : 0} />
-        </Grid>
-      </Grid>
+        <Modal
+          open={isModal}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description">
+          <Paper sx={style}>
+            <ModalCart />
+          </Paper>
+        </Modal>
+      </>
     );
   } else return <h1>Cart is empty</h1>;
 };

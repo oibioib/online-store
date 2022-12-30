@@ -8,7 +8,7 @@ import { CircularProgress, ThemeProvider } from '@mui/material';
 import { Box } from '@mui/system';
 import muiThemeSettings from './theme/Theme';
 import { FilterCheckbox, FilterStringParams, FilterValue } from './types/FilterTypes';
-import { brandsContext, categoriesContext, productsContext } from './context/AppContext';
+import { brandsContext, categoriesContext, productsContext, isModalContext } from './context/AppContext';
 
 declare module '@mui/material/styles' {
   interface Palette {
@@ -24,12 +24,13 @@ function App() {
   const [products, setProducts] = useState<Product[]>([]);
   const [brands, setBrands] = useState<FilterValue[]>([]);
   const [categories, setCategories] = useState<FilterValue[]>([]);
-
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isModal, setIsModal] = useState<boolean>(false);
 
   const { Provider: ProductsProvider } = productsContext;
   const { Provider: BrandsProvider } = brandsContext;
   const { Provider: CategoriesProvider } = categoriesContext;
+  const { Provider: IsModalProvider } = isModalContext;
 
   const getUniqueValues = (products: Product[], param: `${FilterStringParams}`) => {
     const values: FilterValue[] = [];
@@ -73,16 +74,18 @@ function App() {
       <ProductsProvider value={products}>
         <BrandsProvider value={brands}>
           <CategoriesProvider value={categories}>
-            <Router>
-              <Routes>
-                <Route path="/" element={<Layout />}>
-                  <Route index element={<MainPage />} />
-                  <Route path="/cart" element={<CartPage />} />
-                  <Route path="/product/:id" element={<ProductPage />} />
-                </Route>
-                <Route path="*" element={<ErrorPage />} />
-              </Routes>
-            </Router>
+            <IsModalProvider value={{ isModal, setIsModal }}>
+              <Router>
+                <Routes>
+                  <Route path="/" element={<Layout />}>
+                    <Route index element={<MainPage />} />
+                    <Route path="/cart" element={<CartPage />} />
+                    <Route path="/product/:id" element={<ProductPage />} />
+                  </Route>
+                  <Route path="*" element={<ErrorPage />} />
+                </Routes>
+              </Router>
+            </IsModalProvider>
           </CategoriesProvider>
         </BrandsProvider>
       </ProductsProvider>

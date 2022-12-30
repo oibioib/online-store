@@ -3,6 +3,7 @@ import { Box, Button, Input } from '@mui/material';
 import { useState } from 'react';
 import { ISummaryCart } from '../types/CartTypes';
 import { ProductDetailsLabels } from '../types/ProductTypes';
+import BuyNowButton from './BuyNowButton';
 
 //////////ToDo move to settings
 const promoToTest = ['Rs-school', 'student1', 'student2'];
@@ -124,7 +125,9 @@ const SummaryCart = (props: ISummaryCart) => {
         {isPromoFunc(isPromo)}
       </Box>
 
-      <Button variant="contained">Buy now</Button>
+      {/* <Button variant="contained">Buy now</Button>
+       */}
+      <BuyNowButton />
     </Box>
   );
 };
