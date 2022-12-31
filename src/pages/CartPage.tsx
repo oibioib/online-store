@@ -1,7 +1,5 @@
 import { Grid } from '@mui/material';
-// import { Product, CartSettings, storeItem } from '../types/Types';
-import { useEffect, useState } from 'react';
-import { getProduct } from '../services/ProductsApi';
+import { useContext, useEffect, useState } from 'react';
 import CartHeader from '../components/CartHeader';
 import CartProducts from '../components/CartProducts';
 import { useNavigate } from 'react-router';
@@ -9,9 +7,10 @@ import SummaryCart from '../components/SummaryCart';
 import { useSearchParams } from 'react-router-dom';
 import { Product } from '../types/ProductTypes';
 import { CartSettings, storeItem } from '../types/CartTypes';
+import { productsContext } from '../context/AppContext';
 
 const CartPage = () => {
-  ////////////////
+  const productsAll = useContext(productsContext);
   const key = 'OA_cart';
   const [store, setStore] = useState<string>(() => {
     return JSON.parse(localStorage?.getItem(key) || '{}');
@@ -29,10 +28,8 @@ const CartPage = () => {
     }
     return 0;
   }, 0);
-  // const location = useLocation()?.search;
-  const navigate = useNavigate();
-  // const searchParams = new URLSearchParams(location);
 
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   let limitParam = '';
   let pageParam = '';
@@ -49,8 +46,6 @@ const CartPage = () => {
   window.addEventListener('build', () => {
     setStore(JSON.parse(localStorage?.getItem(key) || '{}'));
     if (productArr && productArr?.length - 1 < +limitParam * +pageParam && +pageParam > 1) {
-      // const newPath = location.replace(`page=${pageParam}`, `page=${(+pageParam - 1).toString()}`);
-      // navigate(newPath);
       const tempNewPath = { page: (+pageParam - 1).toString(), limit: limitParam };
       setSearchParams(tempNewPath);
     }
@@ -58,15 +53,13 @@ const CartPage = () => {
 
   useEffect(() => {
     (async () => {
-      // Working with localStorage. Change in future
-
       const storeTempArr: storeItem[] = [];
       for (const [productId, value] of Object.entries<string>(store)) {
         storeTempArr.push({ id: +productId, quantity: +value });
       }
-      //////////////////
+
       const productsToRender: Product[] = [];
-      const result = await Promise.all(storeTempArr.map((item) => getProduct(item.id)));
+      const result = storeTempArr.map((item) => productsAll.find((product) => product.id === item.id));
       result.forEach((item) => {
         if (item) {
           productsToRender.push({ ...item, quantity: +store[item.id] });

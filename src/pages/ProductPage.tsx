@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Typography, Breadcrumbs, Grid, Paper, Box, ImageList, ImageListItem, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import Image from 'mui-image';
-import { getProduct } from '../services/ProductsApi';
 import { Product, ProductDetailsLabels } from '../types/ProductTypes';
+import { productsContext } from '../context/AppContext';
 
 const DescriptionItem = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -18,16 +18,15 @@ const DescriptionItem = styled(Paper)(({ theme }) => ({
 }));
 
 const ProductPage = () => {
+  const productsAll = useContext(productsContext);
+
   const id: string | undefined = useParams().id;
   const navigate = useNavigate();
   const [product, setProduct] = useState<Product>();
   const [imageUrl, setImageUrl] = useState<string>();
 
-  //Get the name from theme Experimental work with cart
   const key = 'OA_cart';
   const store = JSON.parse(localStorage?.getItem(key) || '{}');
-
-  //////////////////////////
 
   function handleClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     event.preventDefault();
@@ -42,17 +41,15 @@ const ProductPage = () => {
   }
 
   useEffect(() => {
-    if (id && +id === 101) {
-      navigate('/error', { replace: true });
-    }
+    // if (id && +id === 101) {
+    //   navigate('/error', { replace: true });
+    // }
     if (id) {
-      (async () => {
-        const result = await getProduct(+id);
-        if (result) {
-          setProduct(result);
-          setImageUrl(result.images[0]);
-        }
-      })();
+      const result = productsAll.find((product) => product.id === +id);
+      if (result) {
+        setProduct(result);
+        setImageUrl(result.images[0]);
+      }
     }
   }, [id, navigate]);
 
