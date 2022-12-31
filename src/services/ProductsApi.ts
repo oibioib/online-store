@@ -2,27 +2,15 @@ import axios from 'axios';
 import { ApiEndpoints, ApiSettings } from '../types/ApiTypes';
 import { Product } from '../types/ProductTypes';
 
-export async function getProducts(limit: number = ApiSettings.ProductsLimit): Promise<Product[] | undefined> {
+export async function getProducts(): Promise<Product[] | undefined> {
   try {
-    const getUrl = `${ApiSettings.Url}${ApiEndpoints.Products}?limit=${limit}`;
+    const getUrl = `${ApiSettings.Url}${ApiEndpoints.Products}`;
     const result = await axios.get(getUrl);
-    return result.data.products;
-  } catch (error) {
-    if (error instanceof Error) {
-      console.log('Error', error.message);
-      throw error;
-    }
-  }
-}
-
-export async function getProduct(id: Product['id']): Promise<Product | undefined> {
-  try {
-    const result = await axios.get(`${ApiSettings.Url}${ApiEndpoints.Products}/${id}`);
     return result.data;
   } catch (error) {
     if (error instanceof Error) {
       console.log('Error', error.message);
-      return undefined;
+      throw error;
     }
   }
 }
