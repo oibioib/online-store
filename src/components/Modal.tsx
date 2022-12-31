@@ -17,6 +17,8 @@ const ModalCart = () => {
   const [cardNumber, setCardNumber] = useState('');
   const [isCardNumber, setIsCardNumber] = useState(false);
   const [cardUrl, setCardUrl] = useState(RSlogo);
+  const [validDate, setValidDate] = useState('');
+  const [isValidDate, setIsValidDate] = useState(false);
 
   function customerNameHandler(event: React.ChangeEvent<HTMLInputElement>) {
     const tempInput = event.target.value.split(' ');
@@ -95,6 +97,30 @@ const ModalCart = () => {
     }
   }
 
+  function validDateHandler(event: React.ChangeEvent<HTMLInputElement>) {
+    const tempInput = +event.target.value.replaceAll('/', '');
+    const tempInputString = event.target.value.replaceAll('/', '');
+    const tempOutPut = [];
+    if (
+      !isNaN(tempInput) &&
+      !(tempInputString.length > 4) &&
+      +tempInputString.split('').slice(0, 2).join('') < 13 &&
+      +tempInputString.split('').slice(2, 4).join('') < 32
+    ) {
+      console.log(tempInputString.split('').slice(0, 2).join(''));
+      if (tempInputString.length < 4) {
+        setIsValidDate(true);
+      } else setIsValidDate(false);
+      for (let i = 0; i < tempInputString.length; i++) {
+        tempOutPut.push(tempInputString.split('')[i]);
+        if ((i + 1) % 2 === 0 && tempInputString.split('')[i + 1]) {
+          tempOutPut.push('/');
+        }
+      }
+      setValidDate(tempInputString ? tempOutPut.join('').toString() : '');
+    }
+  }
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       Personal details
@@ -157,13 +183,30 @@ const ModalCart = () => {
               <Image src={`${cardUrl}`} alt="card Brand" width="2rem" height="2rem" fit="fill" />{' '}
             </Box>
             <Input
-              sx={{ border: 'solid 1px black', marginLeft: '1rem', marginTop: '2rem' }}
+              sx={{ border: 'solid 1px black', marginLeft: '1rem', marginTop: '2rem', color: 'whitesmoke' }}
               error={isCardNumber}
               type="tel"
               value={cardNumber}
               onChange={cardNumberHandler}
               placeholder="Card Number"
             />
+          </Box>
+          <Box sx={{ display: 'flex' }}>
+            <Box sx={{ display: 'flex', marginLeft: '1rem', marginTop: '2rem' }}>
+              <Box>Valid</Box>
+              <Input
+                error={isValidDate}
+                value={validDate}
+                onChange={validDateHandler}
+                placeholder="Valid Date"
+                type="tel"
+                sx={{ border: 'solid 1px black', color: 'whitesmoke', ml: '1rem', mr: '1rem' }}
+              />
+            </Box>
+            <Box sx={{ display: 'flex', marginLeft: '1rem', marginTop: '2rem' }}>
+              <Box>CVV</Box>
+              <Input type="tel" sx={{ border: 'solid 1px black', color: 'whitesmoke', ml: '1rem', mr: '1rem' }} />
+            </Box>
           </Box>
         </Paper>
         <Button variant="contained">Confirm</Button>
