@@ -1,10 +1,12 @@
 import { Box, Button, Input, Paper } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'mui-image';
 import RSlogo from '../theme/cardImg/rs_school.svg';
 import VisaLogo from '../theme/cardImg/visa.svg';
 import MasterCardLogo from '../theme/cardImg/Mastercard.svg';
 import AmericanExpressLogo from '../theme/cardImg/American_Express.svg';
+import { useNavigate } from 'react-router';
+
 const ModalCart = () => {
   const [customerName, setCustomerName] = useState('');
   const [isCustomerName, setIsCustomerName] = useState(false);
@@ -19,11 +21,15 @@ const ModalCart = () => {
   const [cardUrl, setCardUrl] = useState(RSlogo);
   const [validDate, setValidDate] = useState('');
   const [isValidDate, setIsValidDate] = useState(false);
+  const [cvv, setSvv] = useState('');
+  const [isCvv, setIsCvv] = useState(false);
+  const [isConfirmed, setIsConfirmed] = useState(false);
+  const [seconds, setSeconds] = useState(1);
+  const navigate = useNavigate();
 
   function customerNameHandler(event: React.ChangeEvent<HTMLInputElement>) {
     const tempInput = event.target.value.split(' ');
     const [firstWord, secondWord] = tempInput;
-    console.log(firstWord, secondWord);
     if (!(firstWord?.length >= 3) || !(secondWord?.length >= 3)) {
       setIsCustomerName(true);
     } else setIsCustomerName(false);
@@ -107,7 +113,6 @@ const ModalCart = () => {
       +tempInputString.split('').slice(0, 2).join('') < 13 &&
       +tempInputString.split('').slice(2, 4).join('') < 32
     ) {
-      console.log(tempInputString.split('').slice(0, 2).join(''));
       if (tempInputString.length < 4) {
         setIsValidDate(true);
       } else setIsValidDate(false);
@@ -119,6 +124,71 @@ const ModalCart = () => {
       }
       setValidDate(tempInputString ? tempOutPut.join('').toString() : '');
     }
+  }
+
+  function cvvHandler(event: React.ChangeEvent<HTMLInputElement>) {
+    const tempInput = +event.target.value;
+    const tempInputString = event.target.value;
+    if (!isNaN(tempInput) && !(tempInputString.length > 3)) {
+      setSvv(tempInputString ? tempInputString : '');
+    }
+    if (tempInputString.length < 3) {
+      setIsCvv(true);
+    } else setIsCvv(false);
+  }
+
+  function onClickHandler() {
+    const checkerArr = [customerName, customerPhoneNumber, customerAddress, customerEmail, cardNumber, validDate, cvv];
+    const isSetArr = [
+      setIsCustomerName,
+      setIsCustomerPhoneNumber,
+      setIsCustomerAddress,
+      setIsCustomerEmail,
+      setIsCardNumber,
+      setIsValidDate,
+      setIsCvv,
+    ];
+
+    let checker = true;
+
+    checkerArr.forEach((item, index) => {
+      if (item.length === 0) {
+        checker = false;
+        isSetArr[index](true);
+      }
+    });
+
+    if (
+      checker &&
+      !isCustomerName &&
+      !isCustomerPhoneNumber &&
+      !isCustomerAddress &&
+      !isCustomerEmail &&
+      !isCardNumber &&
+      !isValidDate &&
+      !isCvv
+    ) {
+      setIsConfirmed(true);
+    }
+  }
+
+  useEffect(() => {
+    if (isConfirmed) {
+      const interval = setInterval(() => {
+        setSeconds((seconds) => seconds + 1);
+      }, 1000);
+
+      setTimeout(() => {
+        navigate('/');
+        localStorage.clear();
+      }, 5000);
+
+      return () => clearInterval(interval);
+    }
+  }, [isConfirmed]);
+
+  if (isConfirmed) {
+    return <Box>You will be redirect to main page in {seconds} seconds</Box>;
   }
 
   return (
@@ -174,7 +244,7 @@ const ModalCart = () => {
           </Box>
         )}
       </Box>
-      <Box>
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Box>Credit Card details</Box>
         <Paper sx={{ width: '20rem', height: '10rem', m: '1rem', backgroundColor: 'blueviolet' }}>
           <Box sx={{ display: 'flex' }}>
@@ -205,11 +275,35 @@ const ModalCart = () => {
             </Box>
             <Box sx={{ display: 'flex', marginLeft: '1rem', marginTop: '2rem' }}>
               <Box>CVV</Box>
-              <Input type="tel" sx={{ border: 'solid 1px black', color: 'whitesmoke', ml: '1rem', mr: '1rem' }} />
+              <Input
+                type="tel"
+                sx={{ border: 'solid 1px black', color: 'whitesmoke', ml: '1rem', mr: '1rem' }}
+                error={isCvv}
+                value={cvv}
+                onChange={cvvHandler}
+                placeholder="CVV"
+              />
             </Box>
           </Box>
         </Paper>
-        <Button variant="contained">Confirm</Button>
+        {isCardNumber && (
+          <Box component="div" sx={{ display: 'inline', color: 'red' }}>
+            Invalid card number
+          </Box>
+        )}
+        {isValidDate && (
+          <Box component="div" sx={{ display: 'inline', color: 'red' }}>
+            Invalid Date
+          </Box>
+        )}
+        {isCvv && (
+          <Box component="div" sx={{ display: 'inline', color: 'red' }}>
+            Invalid CVV code
+          </Box>
+        )}
+        <Button variant="contained" onClick={onClickHandler}>
+          Confirm
+        </Button>
       </Box>
     </Box>
   );
