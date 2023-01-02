@@ -1,4 +1,4 @@
-import { Grid, Modal, Typography, Box, Paper } from '@mui/material';
+import { Grid, Modal, Paper } from '@mui/material';
 import { useEffect, useState, useContext } from 'react';
 import { getProduct } from '../services/ProductsApi';
 import CartHeader from '../components/CartHeader';

@@ -1,4 +1,4 @@
-import { Button, Modal, Typography, Box } from '@mui/material';
+import { Button } from '@mui/material';
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { isModalContext } from '../context/AppContext';
