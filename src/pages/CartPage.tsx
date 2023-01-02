@@ -42,9 +42,7 @@ const CartPage = () => {
     }
     return 0;
   }, 0);
-  // const location = useLocation()?.search;
   const navigate = useNavigate();
-  // const searchParams = new URLSearchParams(location);
 
   const [searchParams, setSearchParams] = useSearchParams();
   let limitParam = '';
@@ -62,15 +60,6 @@ const CartPage = () => {
   const handleClose = () => {
     setIsModal(false);
   };
-
-  window.addEventListener('build', () => {
-    setStore(JSON.parse(localStorage?.getItem(key) || '{}'));
-    if (productArr && productArr?.length - 1 < +limitParam * +pageParam && +pageParam > 1) {
-      const tempNewPath = { page: (+pageParam - 1).toString(), limit: limitParam };
-      setSearchParams(tempNewPath);
-      console.log('hop');
-    }
-  });
 
   useEffect(() => {
     (async () => {
@@ -96,6 +85,25 @@ const CartPage = () => {
       }
     })();
   }, [store, navigate, totalSum]);
+
+  useEffect(() => {
+    //TODO put in use Effect, and remove while unmount
+    const setLocalStorage = () => {
+      setStore(JSON.parse(localStorage?.getItem(key) || '{}'));
+    };
+    const checkTheLastItemHandler = () => {
+      if (productArr && productArr.length - 1 < +limitParam * +pageParam && +pageParam > 1) {
+        const tempNewPath = { page: (+pageParam - 1).toString(), limit: limitParam };
+        setSearchParams(tempNewPath);
+      }
+    };
+    window.addEventListener('TheLastItem', checkTheLastItemHandler);
+    window.addEventListener('build', setLocalStorage);
+    return () => {
+      window.removeEventListener('build', setLocalStorage);
+      window.removeEventListener('TheLastItem', checkTheLastItemHandler);
+    };
+  }, [store]);
 
   if (productArr) {
     return (
