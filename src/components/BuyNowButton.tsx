@@ -1,15 +1,26 @@
 import { Button } from '@mui/material';
-import { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { useContext, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import { isModalContext } from '../context/AppContext';
 
 const BuyNowButton = () => {
   //TODO Check if the id in cart or not, and add it to cart
+  //Get the name from theme Experimental work with cart
+  const key = 'OA_cart';
+  const [productsInLocalStorage, setProductsInLocalStorage] = useState(localStorage.getItem(key));
+  const productsInLocalStorageParsed = productsInLocalStorage ? JSON.parse(productsInLocalStorage) : {};
+  const id = useParams().id;
+  //////////////////////////
+  ////////////////
 
   const { setIsModal } = useContext(isModalContext);
 
   const handleOpen = () => {
     setIsModal(true);
+    if (id && !productsInLocalStorageParsed[id]) {
+      localStorage.setItem(key, JSON.stringify({ ...productsInLocalStorageParsed, [id]: 1 }));
+      setProductsInLocalStorage(JSON.stringify({ ...productsInLocalStorageParsed, [id]: 1 }));
+    }
   };
 
   return (
