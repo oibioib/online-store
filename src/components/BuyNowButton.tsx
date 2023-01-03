@@ -17,7 +17,7 @@ const BuyNowButton = () => {
 
   const handleOpen = () => {
     setIsModal(true);
-    if (id) {
+    if (id && !productsInLocalStorageParsed[id]) {
       localStorage.setItem(key, JSON.stringify({ ...productsInLocalStorageParsed, [id]: 1 }));
       setProductsInLocalStorage(JSON.stringify({ ...productsInLocalStorageParsed, [id]: 1 }));
     }
