@@ -1,11 +1,16 @@
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Typography, Breadcrumbs, Grid, Paper, Box, ImageList, ImageListItem, Button } from '@mui/material';
+import { Typography, Breadcrumbs, Grid, Paper, Box, ImageList, ImageListItem } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import Image from 'mui-image';
 import { Product, ProductDetailsLabels } from '../types/ProductTypes';
+
+import AddToCartButton from '../components/AddToCartButton';
+import BuyNowButton from '../components/BuyNowButton';
+
 import { productsContext } from '../context/AppContext';
+
 
 const DescriptionItem = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -25,19 +30,16 @@ const ProductPage = () => {
   const [product, setProduct] = useState<Product>();
   const [imageUrl, setImageUrl] = useState<string>();
 
+
   const key = 'OA_cart';
+  //TODO
   const store = JSON.parse(localStorage?.getItem(key) || '{}');
+
 
   function handleClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     event.preventDefault();
     const clickedURL = event.target as HTMLImageElement;
     setImageUrl(`${clickedURL.src}`);
-  }
-
-  function addToLocalStorage() {
-    if (id) {
-      localStorage.setItem(key, JSON.stringify({ ...store, [id]: 1 }));
-    }
   }
 
   useEffect(() => {
@@ -119,12 +121,8 @@ const ProductPage = () => {
                 <div>
                   {ProductDetailsLabels.Currency} {product.price}.00
                 </div>
-                <Button sx={{ margin: '1rem' }} variant="contained" onClick={addToLocalStorage}>
-                  Add to cart
-                </Button>
-                <Button sx={{ margin: '1rem' }} variant="contained" component={Link} to={'/product/25'}>
-                  Buy now
-                </Button>
+                <AddToCartButton id={id ? +id : 0} />
+                <BuyNowButton />
               </Box>
             </Grid>
           </Grid>

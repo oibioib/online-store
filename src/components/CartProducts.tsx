@@ -32,6 +32,7 @@ const CartProducts = (props: ICartProducts) => {
       delete tempObj[`${props.id}`];
       localStorage.setItem(key, JSON.stringify({ ...tempObj }));
       window.dispatchEvent(new Event('build'));
+      window.dispatchEvent(new Event('TheLastItem'));
     } else if (props.id) {
       localStorage.setItem(key, JSON.stringify({ ...store, [props.id]: curQuantity }));
       window.dispatchEvent(new Event('build'));

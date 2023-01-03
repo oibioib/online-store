@@ -26,3 +26,8 @@ export enum ProductDetailsLabels {
   Category = 'Category',
   Currency = '€',
 }
+
+export type IsModalContext = {
+  isModal: boolean;
+  setIsModal: (props: boolean) => void;
+};
