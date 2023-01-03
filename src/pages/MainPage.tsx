@@ -212,7 +212,8 @@ const MainPage = () => {
                 height: 250,
                 backgroundImage: 'url(' + item.thumbnail + ')',
                 backgroundPosition: 'center center',
-                backgroundSize: 'cover',
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: 'contain',
                 boxShadow: 3,
               }}
             />
