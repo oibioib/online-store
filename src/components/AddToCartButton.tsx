@@ -1,40 +1,34 @@
 import { ShoppingCartIcon } from '../theme/Icons';
 import { Button } from '@mui/material';
 import { useState } from 'react';
+import { Product } from '../types/ProductTypes';
 
-type AddToCartButton = {
-  id: number;
-};
-
-const AddToCartButton = (props: AddToCartButton) => {
-  //Get the name from theme Experimental work with cart
+const AddToCartButton = ({ id }: { id: Product['id'] }) => {
   const key = 'OA_cart';
   const [productsInLocalStorage, setProductsInLocalStorage] = useState(localStorage.getItem(key));
   const productsInLocalStorageParsed = productsInLocalStorage ? JSON.parse(productsInLocalStorage) : {};
 
-  //////////////////////////
-
   function addToLocalStorage() {
-    if (props.id) {
-      localStorage.setItem(key, JSON.stringify({ ...productsInLocalStorageParsed, [props.id]: 1 }));
-      setProductsInLocalStorage(JSON.stringify({ ...productsInLocalStorageParsed, [props.id]: 1 }));
+    if (id) {
+      localStorage.setItem(key, JSON.stringify({ ...productsInLocalStorageParsed, [id]: 1 }));
+      setProductsInLocalStorage(JSON.stringify({ ...productsInLocalStorageParsed, [id]: 1 }));
     }
   }
 
   function dropFromLocalStorage() {
-    delete productsInLocalStorageParsed[`${props.id}`];
+    delete productsInLocalStorageParsed[`${id}`];
     localStorage.setItem(key, JSON.stringify({ ...productsInLocalStorageParsed }));
     setProductsInLocalStorage(JSON.stringify({ ...productsInLocalStorageParsed }));
   }
-  if (productsInLocalStorageParsed[`${props.id}`]) {
+  if (productsInLocalStorageParsed[`${id}`]) {
     return (
-      <Button onClick={dropFromLocalStorage} variant="contained">
+      <Button onClick={dropFromLocalStorage} variant="contained" size="large">
         Drop
       </Button>
     );
   } else {
     return (
-      <Button onClick={addToLocalStorage} variant="contained" startIcon={<ShoppingCartIcon />}>
+      <Button onClick={addToLocalStorage} variant="contained" size="large" startIcon={<ShoppingCartIcon />}>
         Add to cart
       </Button>
     );
