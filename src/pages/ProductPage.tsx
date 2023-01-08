@@ -1,132 +1,164 @@
 import { useContext, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Typography, Breadcrumbs, Grid, Paper, Box, ImageList, ImageListItem } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { useNavigate, useParams, Link as LinkRouter } from 'react-router-dom';
+import { Typography, Breadcrumbs, Grid, Paper, Box, ImageList, ImageListItem, Link as MuiLink } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Image from 'mui-image';
 import { Product, ProductDetailsLabels } from '../types/ProductTypes';
-
 import AddToCartButton from '../components/AddToCartButton';
 import BuyNowButton from '../components/BuyNowButton';
+import { HomeRoundedIcon } from '../theme/Icons';
+import { brandsContext, categoriesContext, productsContext } from '../context/AppContext';
+import { FilterStringParams } from '../types/FilterTypes';
 
-import { productsContext } from '../context/AppContext';
-
-
-const DescriptionItem = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+const DescriptionItem = styled(Box)(({ theme }) => ({
   ...theme.typography.body2,
   padding: 0,
-  textAlign: 'center',
+  textAlign: 'left',
   color: theme.palette.text.secondary,
-  border: 'solid black 1px',
-  marginTop: '0.5rem',
+  marginBottom: '1rem',
 }));
 
 const ProductPage = () => {
   const productsAll = useContext(productsContext);
-
-  const id: string | undefined = useParams().id;
-  const navigate = useNavigate();
+  const brandsAll = useContext(brandsContext);
+  const categoriesAll = useContext(categoriesContext);
   const [product, setProduct] = useState<Product>();
-  const [imageUrl, setImageUrl] = useState<string>();
+  const [productImage, setProductImage] = useState<string>();
 
-
-  const key = 'OA_cart';
-  //TODO
-  const store = JSON.parse(localStorage?.getItem(key) || '{}');
-
-
-  function handleClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-    event.preventDefault();
-    const clickedURL = event.target as HTMLImageElement;
-    setImageUrl(`${clickedURL.src}`);
-  }
+  const [productBrandId, setProductBrandId] = useState<number>(0);
+  const [productCategoryId, setProductCategoryId] = useState<number>(0);
+  const { id } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // if (id && +id === 101) {
-    //   navigate('/error', { replace: true });
-    // }
     if (id) {
-      const result = productsAll.find((product) => product.id === +id);
-      if (result) {
-        setProduct(result);
-        setImageUrl(result.images[0]);
+      const productAvailable = productsAll.find((product) => product.id === +id);
+      if (productAvailable) {
+        setProduct(productAvailable);
+        setProductImage(productAvailable.images[0]);
+        const productBrand = brandsAll.find((brand) => brand.title === productAvailable.brand);
+        if (productBrand) {
+          setProductBrandId(productBrand.id);
+        }
+        const productCategory = categoriesAll.find((category) => category.title === productAvailable.category);
+        if (productCategory) {
+          setProductCategoryId(productCategory.id);
+        }
+      } else {
+        navigate('/error', { replace: true });
       }
     }
   }, [id, navigate]);
 
+  function handleClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    event.preventDefault();
+    const clickedImage = event.target as HTMLImageElement;
+    setProductImage(`${clickedImage.src}`);
+  }
+
   if (product) {
     return (
       <div>
-        <Grid container spacing={1}>
-          <Grid item xs={12}>
-            <Box component="div" sx={{ p: 2, display: 'flex', justifyContent: 'center' }} role="presentation">
+        <Paper
+          elevation={5}
+          sx={{
+            '&:hover': {
+              boxShadow: 8,
+            },
+            mb: 2,
+            backgroundColor: 'white',
+            overflow: 'hidden',
+            height: '100%',
+          }}>
+          <Grid container p={2}>
+            <Grid item xs={12}>
               <Breadcrumbs aria-label="breadcrumb">
-                <Link to="/">Store</Link>
-                <Link to="/">{product.brand}</Link>
-                <Link to="/">{product.category}</Link>
+                <MuiLink component={LinkRouter} to={'/'} underline="hover" sx={{ m: 0, display: 'block' }}>
+                  <HomeRoundedIcon
+                    sx={{
+                      m: 0,
+                      fontSize: '1rem',
+                      lineHeight: '1.5rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      '&:hover': { color: 'primary.light' },
+                    }}
+                  />
+                </MuiLink>
+                <MuiLink
+                  component={LinkRouter}
+                  to={productCategoryId ? `/?${FilterStringParams.Cat}=${productCategoryId}` : '/'}
+                  underline="hover">
+                  {product.category}
+                </MuiLink>
+                <MuiLink
+                  component={LinkRouter}
+                  to={productBrandId ? `/?${FilterStringParams.Brand}=${productBrandId}` : '/'}
+                  underline="hover">
+                  {product.brand}
+                </MuiLink>
                 <Typography color="text.primary">{product.title}</Typography>
               </Breadcrumbs>
-            </Box>
-          </Grid>
-          <Grid item xs={12} container spacing={2} sx={{ border: 'solid black 1px', margin: '2rem 3rem' }}>
+            </Grid>
             <Grid item xs={12}>
-              <Box>{product.title}</Box>
-            </Grid>
-            <Grid item xs={2} md={1}>
-              <Box onClick={handleClick}>
-                {}
-                <ImageList cols={1}>
-                  {product.images.map((item) => (
-                    <ImageListItem sx={{ marginTop: '0.5rem', border: 'solid black 1px' }} key={item}>
-                      <img src={`${item}`} srcSet={`${item}`} alt={item} loading="lazy" />
-                    </ImageListItem>
-                  ))}
-                </ImageList>
+              <Box sx={{ textAlign: 'left' }}>
+                <Typography gutterBottom variant="h4" component="h1" sx={{ mt: 1, mb: 1 }}>
+                  {product.brand} {product.title}
+                </Typography>
               </Box>
             </Grid>
-            <Grid item xs={3} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-              <Box>
-                <Image src={`${imageUrl}`} alt={`${product.title}`} />
-              </Box>
-            </Grid>
-            <Grid item xs={4} md={5}>
-              <DescriptionItem>
-                <div>{ProductDetailsLabels.Description}</div>
-                <div>{product.description}</div>
-              </DescriptionItem>
-              <DescriptionItem>
-                <div>{ProductDetailsLabels.DiscountPercentage}</div>
-                <div>{product.discountPercentage}</div>
-              </DescriptionItem>
-              <DescriptionItem>
-                <div>{ProductDetailsLabels.Rating}</div>
-                <div>{product.rating}</div>
-              </DescriptionItem>
-              <DescriptionItem>
-                <div>{ProductDetailsLabels.Stock}</div>
-                <div>{product.stock}</div>
-              </DescriptionItem>
-              <DescriptionItem>
-                <div>{ProductDetailsLabels.Brand}</div>
-                <div>{product.brand}</div>
-              </DescriptionItem>
-              <DescriptionItem>
-                <div>{ProductDetailsLabels.Category}</div>
-                <div>{product.category}</div>
-              </DescriptionItem>
-            </Grid>
-            <Grid item xs={3} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-              <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                <div>
-                  {ProductDetailsLabels.Currency} {product.price}.00
-                </div>
-                <AddToCartButton id={id ? +id : 0} />
-                <BuyNowButton />
-              </Box>
+            <Grid item xs={12} container spacing={2}>
+              <Grid item container xs={12} md={6} spacing={2}>
+                <Grid item xs={2} alignSelf="center">
+                  <Box onClick={handleClick}>
+                    <ImageList cols={1}>
+                      {product.images.map((item) => (
+                        <ImageListItem sx={{ mb: 1, '&:hover': { cursor: 'pointer' } }} key={item}>
+                          <img src={`${item}`} srcSet={`${item}`} alt={item} loading="lazy" />
+                        </ImageListItem>
+                      ))}
+                    </ImageList>
+                  </Box>
+                </Grid>
+                <Grid item xs={9}>
+                  <Image src={`${productImage}`} alt={`${product.title}`} />
+                </Grid>
+              </Grid>
+
+              <Grid item xs={12} md={6}>
+                <DescriptionItem>
+                  {ProductDetailsLabels.Description}: {product.description}
+                </DescriptionItem>
+                <DescriptionItem>
+                  {ProductDetailsLabels.DiscountPercentage}: {product.discountPercentage}
+                </DescriptionItem>
+                <DescriptionItem>
+                  {ProductDetailsLabels.Rating}: {product.rating}
+                </DescriptionItem>
+                <DescriptionItem>
+                  {ProductDetailsLabels.Stock}: {product.stock}
+                </DescriptionItem>
+                <DescriptionItem>
+                  {ProductDetailsLabels.Brand}: {product.brand}
+                </DescriptionItem>
+                <DescriptionItem>
+                  {ProductDetailsLabels.Category}: {product.category}
+                </DescriptionItem>
+                <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                  <Typography variant="h5" component="p" sx={{ mt: 1, mb: 1 }}>
+                    {ProductDetailsLabels.Currency} {product.price}.00
+                  </Typography>
+                  <Box m={2}>
+                    <AddToCartButton id={id ? +id : 0} />
+                  </Box>
+                  <Box>
+                    <BuyNowButton />
+                  </Box>
+                </Box>
+              </Grid>
             </Grid>
           </Grid>
-        </Grid>
+        </Paper>
       </div>
     );
   } else return <></>;

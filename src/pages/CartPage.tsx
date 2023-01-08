@@ -1,7 +1,5 @@
-
 import { Grid, Modal, Paper } from '@mui/material';
 import { useEffect, useState, useContext } from 'react';
-import { getProduct } from '../services/ProductsApi';
 import CartHeader from '../components/CartHeader';
 import CartProducts from '../components/CartProducts';
 import { useNavigate } from 'react-router';
@@ -25,7 +23,6 @@ const style = {
   p: 4,
 };
 
-
 const CartPage = () => {
   const productsAll = useContext(productsContext);
   const key = 'OA_cart';
@@ -48,8 +45,6 @@ const CartPage = () => {
 
   const navigate = useNavigate();
 
-
-  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   let limitParam = '';
   let pageParam = '';
@@ -68,7 +63,6 @@ const CartPage = () => {
     setIsModal(false);
   };
 
-
   window.addEventListener('build', () => {
     setStore(JSON.parse(localStorage?.getItem(key) || '{}'));
     if (productArr && productArr?.length - 1 < +limitParam * +pageParam && +pageParam > 1) {
@@ -76,7 +70,6 @@ const CartPage = () => {
       setSearchParams(tempNewPath);
     }
   });
-
 
   useEffect(() => {
     (async () => {

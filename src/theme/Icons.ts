@@ -4,6 +4,7 @@ import GridViewRoundedIcon from '@mui/icons-material/GridViewRounded';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import ContentCopyRoundedIcon from '@mui/icons-material/ContentCopyRounded';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
+import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 
 export {
   ShoppingCartIcon,
@@ -12,4 +13,5 @@ export {
   ContentCopyIcon,
   RestartAltIcon,
   ContentCopyRoundedIcon,
+  HomeRoundedIcon,
 };
