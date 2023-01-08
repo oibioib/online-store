@@ -11,10 +11,9 @@ import { brandsContext, categoriesContext, productsContext } from '../context/Ap
 import { FilterStringParams } from '../types/FilterTypes';
 
 const DescriptionItem = styled(Box)(({ theme }) => ({
-  ...theme.typography.body2,
+  ...theme.typography.body1,
   padding: 0,
   textAlign: 'left',
-  color: theme.palette.text.secondary,
   marginBottom: '1rem',
 }));
 
@@ -25,8 +24,8 @@ const ProductPage = () => {
   const [product, setProduct] = useState<Product>();
   const [productImage, setProductImage] = useState<string>();
 
-  const [productBrandId, setProductBrandId] = useState<number>(0);
-  const [productCategoryId, setProductCategoryId] = useState<number>(0);
+  const [productBrandId, setProductBrandId] = useState<number>(-1);
+  const [productCategoryId, setProductCategoryId] = useState<number>(-1);
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -87,13 +86,13 @@ const ProductPage = () => {
                 </MuiLink>
                 <MuiLink
                   component={LinkRouter}
-                  to={productCategoryId ? `/?${FilterStringParams.Cat}=${productCategoryId}` : '/'}
+                  to={productCategoryId >= 0 ? `/?${FilterStringParams.Cat}=${productCategoryId}` : '/'}
                   underline="hover">
                   {product.category}
                 </MuiLink>
                 <MuiLink
                   component={LinkRouter}
-                  to={productBrandId ? `/?${FilterStringParams.Brand}=${productBrandId}` : '/'}
+                  to={productBrandId >= 0 ? `/?${FilterStringParams.Brand}=${productBrandId}` : '/'}
                   underline="hover">
                   {product.brand}
                 </MuiLink>
