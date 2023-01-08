@@ -4,14 +4,10 @@ import { Link, useParams } from 'react-router-dom';
 import { isModalContext } from '../context/AppContext';
 
 const BuyNowButton = () => {
-  //TODO Check if the id in cart or not, and add it to cart
-  //Get the name from theme Experimental work with cart
   const key = 'OA_cart';
   const [productsInLocalStorage, setProductsInLocalStorage] = useState(localStorage.getItem(key));
   const productsInLocalStorageParsed = productsInLocalStorage ? JSON.parse(productsInLocalStorage) : {};
   const id = useParams().id;
-  //////////////////////////
-  ////////////////
 
   const { setIsModal } = useContext(isModalContext);
 

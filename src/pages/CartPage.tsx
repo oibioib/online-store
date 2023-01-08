@@ -1,7 +1,7 @@
 import { Grid, Modal, Paper } from '@mui/material';
 import { useEffect, useState, useContext } from 'react';
 import CartHeader from '../components/CartHeader';
-import CartProducts from '../components/CartProducts';
+import CartProduct from '../components/CartProducts';
 import { useNavigate } from 'react-router';
 import SummaryCart from '../components/SummaryCart';
 import { useSearchParams } from 'react-router-dom';
@@ -18,7 +18,6 @@ const style = {
   transform: 'translate(-50%, -50%)',
   width: 400,
   bgcolor: 'background.paper',
-  border: '2px solid #000',
   boxShadow: 24,
   p: 4,
 };
@@ -95,7 +94,6 @@ const CartPage = () => {
   }, [store, navigate, totalSum]);
 
   useEffect(() => {
-    //TODO put in use Effect, and remove while unmount
     const setLocalStorage = () => {
       setStore(JSON.parse(localStorage?.getItem(key) || '{}'));
     };
@@ -115,19 +113,27 @@ const CartPage = () => {
 
   if (productArr) {
     return (
-      <>
-        <Grid container spacing={1}>
-          <Grid item xs={8}>
+      <Paper
+        elevation={5}
+        sx={{
+          mb: 2,
+          p: 2,
+          backgroundColor: 'white',
+          overflow: 'hidden',
+          height: '100%',
+        }}>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={8}>
             <CartHeader length={productArr.length} />
             {productArr
               .filter((_, index) => {
                 return index >= (page - 1) * itemPerPage && index < page * itemPerPage;
               })
               .map((item, index) => {
-                return <CartProducts key={item.id} {...item} index={index + (page - 1) * itemPerPage} />;
+                return <CartProduct key={item.id} {...item} index={index + (page - 1) * itemPerPage} />;
               })}
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} md={4}>
             <SummaryCart totalSum={totalSum ? totalSum : 0} totalItems={totalItems ? totalItems : 0} />
           </Grid>
         </Grid>
@@ -140,7 +146,7 @@ const CartPage = () => {
             <ModalCart />
           </Paper>
         </Modal>
-      </>
+      </Paper>
     );
   } else return <h1>Cart is empty</h1>;
 };

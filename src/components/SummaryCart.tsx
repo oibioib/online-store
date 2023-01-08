@@ -1,13 +1,10 @@
-import { Box, Button, Input } from '@mui/material';
-// import { ISummaryCart, ProductDetailsLabels } from '../types/Types';
+import { Box, Button, Input, Paper, Grid } from '@mui/material';
 import { useState } from 'react';
 import { ISummaryCart } from '../types/CartTypes';
 import { ProductDetailsLabels } from '../types/ProductTypes';
 import BuyNowButton from './BuyNowButton';
 
-//////////ToDo move to settings
 const promoToTest = ['Rs-school', 'student1', 'student2'];
-////////////////////Store #2
 const discountKeyToStore = 'OA_discount';
 
 const SummaryCart = (props: ISummaryCart) => {
@@ -100,35 +97,40 @@ const SummaryCart = (props: ISummaryCart) => {
   };
 
   return (
-    <Box
+    <Paper
+      elevation={5}
       sx={{
-        ////////////To change
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        border: 'solid black 1px',
-        marginTop: '4rem',
-        height: '20rem',
+        mb: 2,
+        p: 2,
+        backgroundColor: 'white',
+        overflow: 'hidden',
       }}>
-      <Box>Summary</Box>
-      <Box>Products: {props.totalItems}</Box>
-      <Box>{implementedDiscountFunc(implementedDiscount)}</Box>
-      <Box>
-        PromoCode
-        <Input size="small" type="string" onChange={onChangeHandler} value={inputValue} />
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          gap: 2,
+        }}>
+        <Box>Summary</Box>
+        <Box>Products: {props.totalItems}</Box>
+        <Box>{implementedDiscountFunc(implementedDiscount)}</Box>
+        <Grid container spacing={1} alignItems="center" justifyContent="center">
+          <Grid item>PromoCode</Grid>
+          <Grid item>
+            <Input size="small" type="string" onChange={onChangeHandler} value={inputValue} />
+          </Grid>
+        </Grid>
+        <Box>
+          Promo to test:
+          {promoToTest.map((item, index) => (
+            <Box key={index}>{item}</Box>
+          ))}
+          {isPromoFunc(isPromo)}
+        </Box>
+        <BuyNowButton />
       </Box>
-      <Box>
-        Promo to test:
-        {promoToTest.map((item, index) => (
-          <Box key={index}>{item}</Box>
-        ))}
-        {isPromoFunc(isPromo)}
-      </Box>
-
-      {/* <Button variant="contained">Buy now</Button>
-       */}
-      <BuyNowButton />
-    </Box>
+    </Paper>
   );
 };
 

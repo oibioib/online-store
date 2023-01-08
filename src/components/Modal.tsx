@@ -244,16 +244,16 @@ const ModalCart = () => {
           </Box>
         )}
       </Box>
-      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 5 }}>
         <Box>Credit Card details</Box>
-        <Paper sx={{ width: '20rem', height: '10rem', m: '1rem', backgroundColor: 'blueviolet' }}>
+        <Paper sx={{ width: '20rem', height: '10rem', m: '1rem', backgroundColor: 'neutral.main' }}>
           <Box sx={{ display: 'flex' }}>
             {' '}
             <Box sx={{ marginLeft: '1rem', marginTop: '2rem' }}>
               <Image src={`${cardUrl}`} alt="card Brand" width="2rem" height="2rem" fit="fill" />{' '}
             </Box>
             <Input
-              sx={{ border: 'solid 1px black', marginLeft: '1rem', marginTop: '2rem', color: 'whitesmoke' }}
+              sx={{ marginLeft: '1rem', marginTop: '2rem' }}
               error={isCardNumber}
               type="tel"
               value={cardNumber}
@@ -262,7 +262,7 @@ const ModalCart = () => {
             />
           </Box>
           <Box sx={{ display: 'flex' }}>
-            <Box sx={{ display: 'flex', marginLeft: '1rem', marginTop: '2rem' }}>
+            <Box sx={{ display: 'flex', marginLeft: '1rem', marginTop: '2rem', alignItems: 'center' }}>
               <Box>Valid</Box>
               <Input
                 error={isValidDate}
@@ -270,14 +270,14 @@ const ModalCart = () => {
                 onChange={validDateHandler}
                 placeholder="Valid Date"
                 type="tel"
-                sx={{ border: 'solid 1px black', color: 'whitesmoke', ml: '1rem', mr: '1rem' }}
+                sx={{ ml: '1rem', mr: '1rem' }}
               />
             </Box>
-            <Box sx={{ display: 'flex', marginLeft: '1rem', marginTop: '2rem' }}>
+            <Box sx={{ display: 'flex', marginLeft: '1rem', marginTop: '2rem', alignItems: 'center' }}>
               <Box>CVV</Box>
               <Input
                 type="tel"
-                sx={{ border: 'solid 1px black', color: 'whitesmoke', ml: '1rem', mr: '1rem' }}
+                sx={{ ml: '1rem', mr: '1rem' }}
                 error={isCvv}
                 value={cvv}
                 onChange={cvvHandler}

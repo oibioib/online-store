@@ -20,6 +20,7 @@ const AddToCartButton = ({ id }: { id: Product['id'] }) => {
     localStorage.setItem(key, JSON.stringify({ ...productsInLocalStorageParsed }));
     setProductsInLocalStorage(JSON.stringify({ ...productsInLocalStorageParsed }));
   }
+
   if (productsInLocalStorageParsed[`${id}`]) {
     return (
       <Button onClick={dropFromLocalStorage} variant="contained" size="large">
