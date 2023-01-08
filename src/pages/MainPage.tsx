@@ -7,8 +7,6 @@ import { CatalogParams } from '../types/CatalogTypes';
 import { Button, Grid, Link as MuiLink, Paper, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 
-import { ShoppingCartIcon } from '../theme/Icons';
-
 import { brandsContext, categoriesContext, productsContext } from '../context/AppContext';
 import ViewChange, { ViewParams } from '../components/ViewChange';
 import SortChange, { defaultSortCb, defaultSortId, sorts } from '../components/SortChange';
@@ -18,6 +16,7 @@ import Search from '../components/Search';
 import FilterWithCheckbox from '../components/FilterWithCheckbox';
 import FilterWithRangeSlider from '../components/FilterWithRangeSlider';
 import { filterDelimiter, FilterNumberParams, FilterStringParams, FilterValue } from '../types/FilterTypes';
+import AddToCartButton from '../components/AddToCartButton';
 
 const MainPage = () => {
   const productsAll = useContext(productsContext);
@@ -148,7 +147,6 @@ const MainPage = () => {
       const key = searchField as keyof Product;
       return key in product ? product[key] : '';
     });
-    // TODO remove field check while interface Product has quantity
     return productFileds.some((field) => (field ? field.toString().toLowerCase().includes(search) : false));
   };
 
@@ -192,7 +190,7 @@ const MainPage = () => {
 
   const productsToRender = productsFiltered.sort(sortProductsCb).map((item) => {
     return view === ViewParams.Full ? (
-      <Grid item key={item.id} xs={12} sm={6} md={4}>
+      <Grid item key={item.id} xs={12} md={6} lg={4}>
         <Paper
           elevation={5}
           sx={{
@@ -245,12 +243,10 @@ const MainPage = () => {
             </Typography>
           </Box>
           <Typography gutterBottom variant="h5" component="div" sx={{ p: 1 }}>
-            {ProductDetailsLabels.Currency} {item.price}
+            {ProductDetailsLabels.Currency} {item.price}.00
           </Typography>
           <Grid container gap={1} justifyContent="center" alignItems="center">
-            <Button variant="contained" size="large" startIcon={<ShoppingCartIcon />}>
-              Add to cart
-            </Button>
+            <AddToCartButton id={item.id} />
             <Button size="large" component={LinkRouter} to={'/product/' + item.id}>
               Details
             </Button>
@@ -298,9 +294,6 @@ const MainPage = () => {
                       sx={{ m: 0, display: 'block' }}>
                       {item.title}
                     </MuiLink>
-                    {/* <Typography variant="h6" component="p" sx={{ mb: 0 }}>
-                      {item.title}
-                    </Typography> */}
                   </Grid>
                   <Grid item sx={{ textAlign: 'left' }}>
                     <Grid container spacing={1}>
@@ -334,16 +327,14 @@ const MainPage = () => {
                   </Grid>
                   <Grid item sx={{ textAlign: 'left' }}>
                     <Typography gutterBottom variant="h5" component="div" sx={{ mt: 1 }}>
-                      {ProductDetailsLabels.Currency} {item.price}
+                      {ProductDetailsLabels.Currency} {item.price}.00
                     </Typography>
                   </Grid>
                 </Grid>
               </Grid>
               <Grid container item xs alignItems="center">
                 <Grid container gap={1} justifyContent="flex-end" alignItems="center">
-                  <Button variant="contained" startIcon={<ShoppingCartIcon />}>
-                    Add to cart
-                  </Button>
+                  <AddToCartButton id={item.id} />
                   <Button component={LinkRouter} to={'/product/' + item.id}>
                     Details
                   </Button>
@@ -359,7 +350,7 @@ const MainPage = () => {
   return (
     <Grid container>
       <Grid container item spacing={2}>
-        <Grid item container xs={3} direction="column">
+        <Grid item container xs={12} sm={5} md={3} direction="column">
           <Grid item mb={2}>
             <CopyToClipboard
               canCopyUrlToClipboard={canCopyUrlToClipboard}
@@ -384,7 +375,7 @@ const MainPage = () => {
             </>
           </Grid>
         </Grid>
-        <Grid item xs={9}>
+        <Grid item xs={12} sm={7} md={9}>
           <Grid container item>
             <Grid container item spacing={{ xs: 2, md: 3 }} alignItems="center" justifyContent="space-between" mb={2}>
               <Grid item>

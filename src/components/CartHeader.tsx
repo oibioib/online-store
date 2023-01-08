@@ -1,4 +1,4 @@
-import { Box, Button, Input } from '@mui/material';
+import { Button, Input, Grid } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { CartSettings, ICartHeader } from '../types/CartTypes';
 
@@ -6,10 +6,10 @@ const CartHeader = (props: ICartHeader) => {
   const location = useLocation()?.search;
   const navigate = useNavigate();
   const searchParams = new URLSearchParams(location);
-  // const [searchParams, setSearchParams] = useSearchParams();
   let limitParam = '';
   let pageParam = '';
   let itemPerPage: number;
+
   if (searchParams.get('limit') != null) {
     limitParam = searchParams.get('limit') as string;
   }
@@ -30,8 +30,6 @@ const CartHeader = (props: ICartHeader) => {
       newPath = location.replace(`limit=${limitParam}`, `limit=${itemPerPage.toString()}`);
     } else newPath += `limit=${itemPerPage.toString()}`;
     navigate(newPath);
-    // searchParams.set({ limit: event.target.value });
-    // setSearchParams([['limit', event.target.value]]);
   }
 
   function onBackHandler(): void {
@@ -45,7 +43,6 @@ const CartHeader = (props: ICartHeader) => {
         newPath = location.replace(`page=${pageParam}`, `page=${curPage.toString()}`);
       } else newPath += `page=${curPage.toString()}`;
       navigate(newPath);
-      // setSearchParams([['page', curPage.toString()]]);
     }
   }
 
@@ -64,20 +61,25 @@ const CartHeader = (props: ICartHeader) => {
   }
 
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-      <Box>Products in Cart</Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '7rem' }}>
-          ITEMS: <Input size="small" type="number" onChange={onChangeHandler} defaultValue={`${limit}`} />
-        </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Box>Page:</Box>
-          <Button onClick={onBackHandler}>{`<`}</Button>
-          <Box>{page}</Box>
-          <Button onClick={onForwardHandler}>{`>`}</Button>
-        </Box>
-      </Box>
-    </Box>
+    <Grid container justifyContent="space-between" mb={1} width="auto" alignItems="center">
+      <Grid item>Products in Cart</Grid>
+      <Grid item container spacing={2} width="auto" alignItems="center">
+        <Grid item>
+          <span>Items: </span>
+          <Input size="small" type="number" onChange={onChangeHandler} defaultValue={`${limit}`} sx={{ width: 50 }} />
+        </Grid>
+        <Grid item container width="auto">
+          <Grid item>
+            Page:
+            <Button onClick={onBackHandler}>{`<`}</Button>
+          </Grid>
+          <Grid item>
+            {page}
+            <Button onClick={onForwardHandler}>{`>`}</Button>
+          </Grid>
+        </Grid>
+      </Grid>
+    </Grid>
   );
 };
 
