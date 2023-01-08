@@ -1,10 +1,10 @@
 import { Box, Button, Input, Paper } from '@mui/material';
 import { useEffect, useState } from 'react';
 import Image from 'mui-image';
-import RSlogo from '../theme/cardImg/rs_school.svg';
-import VisaLogo from '../theme/cardImg/visa.svg';
-import MasterCardLogo from '../theme/cardImg/Mastercard.svg';
-import AmericanExpressLogo from '../theme/cardImg/American_Express.svg';
+import RSlogo from '../assets/rsschooljs.svg';
+import VisaLogo from '../assets/visa.svg';
+import MasterCardLogo from '../assets/mastercard.svg';
+import AmericanExpressLogo from '../assets/american-express.svg';
 import { useNavigate } from 'react-router';
 
 const ModalCart = () => {
