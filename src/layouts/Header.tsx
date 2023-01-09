@@ -1,21 +1,20 @@
 import { Grid } from '@mui/material';
-import { Box } from '@mui/system';
 import Image from 'mui-image';
 import { Link } from 'react-router-dom';
 import storeLogo from '../assets/logo.png';
-import CartLogo from '../components/CartLogo';
+import CartInfo from '../components/CartInfo';
 
 const Header = () => {
   return (
-    <Grid container direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-      <Box>
+    <Grid container direction="row" justifyContent="space-between" alignItems="center" mb={3} mt={3}>
+      <Grid item>
         <Link to="/">
           <Image src={storeLogo} alt="Online store"></Image>
         </Link>
-      </Box>
-      <Box>
-        <CartLogo />
-      </Box>
+      </Grid>
+      <Grid item xs={12} sm={8}>
+        <CartInfo />
+      </Grid>
     </Grid>
   );
 };

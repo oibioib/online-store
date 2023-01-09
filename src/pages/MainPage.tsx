@@ -281,8 +281,8 @@ const MainPage = () => {
                 />
               </LinkRouter>
             </Grid>
-            <Grid container item xs gap={1}>
-              <Grid item>
+            <Grid container item xs gap={1} justifyContent="space-between">
+              <Grid item xs={12} md={7}>
                 <Grid container direction="column">
                   <Grid item sx={{ textAlign: 'left' }}>
                     <MuiLink
@@ -332,7 +332,7 @@ const MainPage = () => {
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid container item xs alignItems="center">
+              <Grid container item xs={12} md={4} alignItems="center">
                 <Grid container gap={1} justifyContent="flex-end" alignItems="center">
                   <AddToCartButton id={item.id} />
                   <Button component={LinkRouter} to={'/product/' + item.id}>
