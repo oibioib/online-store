@@ -9,6 +9,7 @@ const CartHeader = (props: ICartHeader) => {
   let limitParam = '';
   let pageParam = '';
   let itemPerPage: number;
+  console.log(props);
 
   if (searchParams.get('limit') != null) {
     limitParam = searchParams.get('limit') as string;
@@ -66,7 +67,14 @@ const CartHeader = (props: ICartHeader) => {
       <Grid item container spacing={2} width="auto" alignItems="center">
         <Grid item>
           <span>Items: </span>
-          <Input size="small" type="number" onChange={onChangeHandler} defaultValue={`${limit}`} sx={{ width: 50 }} />
+          <Input
+            size="small"
+            type="number"
+            onChange={onChangeHandler}
+            defaultValue={`${limit}`}
+            sx={{ width: 50 }}
+            inputProps={{ min: 1, max: props.length }}
+          />
         </Grid>
         <Grid item container width="auto">
           <Grid item>
