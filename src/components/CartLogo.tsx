@@ -6,7 +6,6 @@ import { Product } from '../types/ProductTypes';
 import { storeItem } from '../types/CartTypes';
 import { ShoppingCartIcon } from '../theme/Icons';
 import { ProductDetailsLabels } from '../types/ProductTypes';
-import { color } from '@mui/system';
 
 const CartLogo = () => {
   const productsAll = useContext(productsContext);
