@@ -61,14 +61,6 @@ const CartPage = () => {
     setIsModal(false);
   };
 
-  window.addEventListener('build', () => {
-    setStore(JSON.parse(localStorage?.getItem(key) || '{}'));
-    if (productArr && productArr?.length - 1 < +limitParam * +pageParam && +pageParam > 1) {
-      const tempNewPath = { page: (+pageParam - 1).toString(), limit: limitParam };
-      setSearchParams(tempNewPath);
-    }
-  });
-
   useEffect(() => {
     (async () => {
       const storeTempArr: storeItem[] = [];
@@ -97,7 +89,8 @@ const CartPage = () => {
       setStore(JSON.parse(localStorage?.getItem(key) || '{}'));
     };
     const checkTheLastItemHandler = () => {
-      if (productArr && productArr.length - 1 < +limitParam * +pageParam && +pageParam > 1) {
+      if (productArr && productArr.length < +limitParam * +pageParam && +pageParam > 1) {
+        console.log('here');
         const tempNewPath = { page: (+pageParam - 1).toString(), limit: limitParam };
         setSearchParams(tempNewPath);
       }
