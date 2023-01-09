@@ -147,7 +147,9 @@ const MainPage = () => {
       const key = searchField as keyof Product;
       return key in product ? product[key] : '';
     });
-    return productFileds.some((field) => (field ? field.toString().toLowerCase().includes(search) : false));
+    return productFileds.some((field) =>
+      field ? field.toString().toLowerCase().includes(search.toLowerCase()) : false
+    );
   };
 
   const filterCb = (
