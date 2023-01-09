@@ -3,6 +3,7 @@ import { Box } from '@mui/system';
 import Image from 'mui-image';
 import { Link } from 'react-router-dom';
 import storeLogo from '../assets/logo.png';
+import CartLogo from '../components/CartLogo';
 
 const Header = () => {
   return (
@@ -12,7 +13,9 @@ const Header = () => {
           <Image src={storeLogo} alt="Online store"></Image>
         </Link>
       </Box>
-      <Box>Cart Info</Box>
+      <Box>
+        <CartLogo />
+      </Box>
     </Grid>
   );
 };

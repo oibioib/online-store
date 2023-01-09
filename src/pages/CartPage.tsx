@@ -7,7 +7,6 @@ import SummaryCart from '../components/SummaryCart';
 import { useSearchParams } from 'react-router-dom';
 import { Product } from '../types/ProductTypes';
 import { CartSettings, storeItem } from '../types/CartTypes';
-
 import { isModalContext, productsContext } from '../context/AppContext';
 import ModalCart from '../components/Modal';
 

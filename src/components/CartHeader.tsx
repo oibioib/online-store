@@ -9,7 +9,6 @@ const CartHeader = (props: ICartHeader) => {
   let limitParam = '';
   let pageParam = '';
   let itemPerPage: number;
-  console.log(props);
 
   if (searchParams.get('limit') != null) {
     limitParam = searchParams.get('limit') as string;
@@ -21,6 +20,13 @@ const CartHeader = (props: ICartHeader) => {
   const page = pageParam ? +pageParam : 1;
   let curPage = page;
   const limit = limitParam ? +limitParam : CartSettings.perPage;
+
+  if (limitParam && pageParam && Math.ceil(props.length / +limitParam) < +pageParam) {
+    let newPath = location;
+    newPath = location.replace(`page=${pageParam}`, `page=${Math.ceil(props.length / +limitParam).toString()}`);
+    navigate(newPath);
+  }
+
   function onChangeHandler(event: React.ChangeEvent<HTMLInputElement>) {
     let newPath = location;
     itemPerPage = +event.target.value;
