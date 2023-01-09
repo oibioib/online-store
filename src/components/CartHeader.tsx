@@ -9,6 +9,7 @@ const CartHeader = (props: ICartHeader) => {
   let limitParam = '';
   let pageParam = '';
   let itemPerPage: number;
+  console.log(props);
 
   if (searchParams.get('limit') != null) {
     limitParam = searchParams.get('limit') as string;
@@ -72,7 +73,7 @@ const CartHeader = (props: ICartHeader) => {
             onChange={onChangeHandler}
             defaultValue={`${limit}`}
             sx={{ width: 50 }}
-            inputProps={{ min: 1, max: 10 }}
+            inputProps={{ min: 1, max: props.length }}
           />
         </Grid>
         <Grid item container width="auto">
