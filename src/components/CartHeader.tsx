@@ -66,7 +66,14 @@ const CartHeader = (props: ICartHeader) => {
       <Grid item container spacing={2} width="auto" alignItems="center">
         <Grid item>
           <span>Items: </span>
-          <Input size="small" type="number" onChange={onChangeHandler} defaultValue={`${limit}`} sx={{ width: 50 }} />
+          <Input
+            size="small"
+            type="number"
+            onChange={onChangeHandler}
+            defaultValue={`${limit}`}
+            sx={{ width: 50 }}
+            inputProps={{ min: 1, max: 10 }}
+          />
         </Grid>
         <Grid item container width="auto">
           <Grid item>
