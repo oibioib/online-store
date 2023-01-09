@@ -8,10 +8,15 @@ const AddToCartButton = ({ id }: { id: Product['id'] }) => {
   const [productsInLocalStorage, setProductsInLocalStorage] = useState(localStorage.getItem(key));
   const productsInLocalStorageParsed = productsInLocalStorage ? JSON.parse(productsInLocalStorage) : {};
 
+  window.addEventListener('StorageChanged', () => {
+    setProductsInLocalStorage(localStorage.getItem(key));
+  });
+
   function addToLocalStorage() {
     if (id) {
       localStorage.setItem(key, JSON.stringify({ ...productsInLocalStorageParsed, [id]: 1 }));
       setProductsInLocalStorage(JSON.stringify({ ...productsInLocalStorageParsed, [id]: 1 }));
+      window.dispatchEvent(new Event('StorageChanged'));
     }
   }
 
@@ -19,6 +24,7 @@ const AddToCartButton = ({ id }: { id: Product['id'] }) => {
     delete productsInLocalStorageParsed[`${id}`];
     localStorage.setItem(key, JSON.stringify({ ...productsInLocalStorageParsed }));
     setProductsInLocalStorage(JSON.stringify({ ...productsInLocalStorageParsed }));
+    window.dispatchEvent(new Event('StorageChanged'));
   }
 
   if (productsInLocalStorageParsed[`${id}`]) {
