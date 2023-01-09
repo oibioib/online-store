@@ -54,7 +54,13 @@ const CartProduct = (props: ICartProducts) => {
             {props.title}
           </Typography>
           <Box mb={2}>{props.description}</Box>
-          <Box sx={{ display: 'flex', justifyContent: 'left', gap: 2 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'left', gap: 2, flexWrap: 'wrap' }}>
+            <Box>
+              {ProductDetailsLabels.Brand}: {props.brand}
+            </Box>
+            <Box>
+              {ProductDetailsLabels.Category}: {props.category}
+            </Box>
             <Box>
               {ProductDetailsLabels.Rating}: {props.rating}
             </Box>
