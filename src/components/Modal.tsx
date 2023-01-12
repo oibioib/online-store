@@ -179,8 +179,9 @@ const ModalCart = () => {
       }, 1000);
 
       setTimeout(() => {
-        navigate('/');
         localStorage.clear();
+        navigate('/');
+        window.location.reload();
       }, 5000);
 
       return () => clearInterval(interval);
