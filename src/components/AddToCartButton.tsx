@@ -12,6 +12,12 @@ const AddToCartButton = ({ id }: { id: Product['id'] }) => {
     setProductsInLocalStorage(localStorage.getItem(key));
   });
 
+  /* TODO:
+    * - используйте Function expression в ES6 стиле, e.g. const addToLocalStorage = () => { ... }
+    * - логику работы с localstorage следовалы бы вынести в некий сервис, а из компонента дергать только его метод, например storage.set(...), storage.get(...).
+    * - использование addEventListener, dispatchEvent не лучшее решение. Как обсуждали - сделовало бы использовать общий контекст корзины с методами ее обновления.
+   */
+
   function addToLocalStorage() {
     if (id) {
       localStorage.setItem(key, JSON.stringify({ ...productsInLocalStorageParsed, [id]: 1 }));

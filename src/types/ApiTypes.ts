@@ -1,3 +1,4 @@
+// TODO: это тоже лучше вынести в константы
 export enum ApiSettings {
   Url = 'https://api-store-online-store.cyclic.app/',
 }

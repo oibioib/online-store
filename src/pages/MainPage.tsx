@@ -31,6 +31,8 @@ const MainPage = () => {
   const [search, setSearch] = useState<string>('');
   const [brands, setBrands] = useState<number[]>([]);
   const [categories, setCategories] = useState<number[]>([]);
+
+  // TODO: избегайте magic numbers, по коду должно быть понятно, что такое 1000000. В данном примере MAX_PRICE = 1000000, MAX_IN_STOCK = 1000000 и должно быть вынесено в файл с константами.
   const [price, setPrice] = useState<number[]>([0, 1000000]);
   const [stock, setStock] = useState<number[]>([0, 1000000]);
 
@@ -118,7 +120,7 @@ const MainPage = () => {
     setSearch('');
     setBrands([]);
     setCategories([]);
-    setPrice([0, 1000000]);
+    setPrice([0, 1000000]); // TODO: коммент выше относительно констант и magic numbers
     setStock([0, 1000000]);
     setUrlParams(urlParams);
   };
@@ -184,11 +186,11 @@ const MainPage = () => {
       .filter((product: Product) => filterCb(product, categories, FilterStringParams.Cat, categoriesAll))
       .filter((product: Product) => filterCb(product, brands, FilterStringParams.Brand, brandsAll))
       .filter(filterStockCb)
-      .filter(filterPriceCb);
+      .filter(filterPriceCb); // TODO: 5 раз выполняется проход по массиву. Все проверки можно выполнить за один проход filter.
 
   const productsFiltered = useMemo(() => {
     return getProductsShown(products);
-  }, [brands, categories, price, stock, search]);
+  }, [brands, categories, price, stock, search]); // TODO: лишние зависимости, в данном примере должны быть только [getProductsShown, products]
 
   const productsToRender = productsFiltered.sort(sortProductsCb).map((item) => {
     return view === ViewParams.Full ? (

@@ -2,6 +2,11 @@ import { Button, Input, Grid } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { CartSettings, ICartHeader } from '../types/CartTypes';
 
+
+/* TODO: используйте деструктуризацию пропсов.
+    Вместо того, чтоб дальше по коду использовать props.length, проще сразу деструктуризировать length в параметрах компонента:
+    const CartHeader = ({length}: ICartHeader) => { ... }
+ */
 const CartHeader = (props: ICartHeader) => {
   const location = useLocation()?.search;
   const navigate = useNavigate();
@@ -22,7 +27,7 @@ const CartHeader = (props: ICartHeader) => {
   const limit = limitParam ? +limitParam : CartSettings.perPage;
 
   if (limitParam && pageParam && Math.ceil(props.length / +limitParam) < +pageParam) {
-    let newPath = location;
+    let newPath = location; // TODO: лишнее присвоение значения, в следующей строке идет определение newPath.
     newPath = location.replace(`page=${pageParam}`, `page=${Math.ceil(props.length / +limitParam).toString()}`);
     navigate(newPath);
   }
@@ -30,6 +35,10 @@ const CartHeader = (props: ICartHeader) => {
   function onChangeHandler(event: React.ChangeEvent<HTMLInputElement>) {
     let newPath = location;
     itemPerPage = +event.target.value;
+
+    /* TODO: для манипуляций ниже используйте URLSearchParams и его методы вместо работы со строками.
+    *   Выше по коду уже используется searchParams, тут та же история.
+    */
     if (location && location.includes('page=')) {
       newPath += '&';
     } else newPath += '?';

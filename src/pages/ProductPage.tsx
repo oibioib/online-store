@@ -44,6 +44,7 @@ const ProductPage = () => {
           setProductCategoryId(productCategory.id);
         }
       } else {
+        // TODO: /error в константы
         navigate('/error', { replace: true });
       }
     }

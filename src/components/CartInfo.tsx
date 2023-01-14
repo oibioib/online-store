@@ -28,6 +28,7 @@ const CartInfo = () => {
     }
   });
 
+  // TODO: те же замечания что тут src/components/AddToCartButton.tsx:15
   window.addEventListener('build', () => {
     setStore(JSON.parse(localStorage?.getItem(key) || '{}'));
   });
@@ -36,11 +37,14 @@ const CartInfo = () => {
     setStore(JSON.parse(localStorage?.getItem(key) || '{}'));
   });
 
+  // TODO: не используйте сокращения переменных (cur)
+  // Используйте деструктуризацию объектов в параметрах {quantity, price} вместо cur
   const totalSum = productArr?.reduce<number>((acc: number, cur: Product) => {
     if (cur.quantity && cur.price) {
-      return (acc += +cur?.quantity * +cur?.price);
+      return (acc += +cur?.quantity * +cur?.price); // лишняя проверка на undefined, в условии уже проверяется существование
     }
-    return 0;
+    return 0; // если у какого-то товара в корзине по каким-то причинам цена будет = 0 - общая сумма посчитается некорректно.
+    // редюсер может быть упрощен до reduce.(acc: number, {quantity, price}: Product) => acc + quantity * price, 0)
   }, 0);
   const totalItems = productArr?.reduce<number>((acc: number, cur: Product) => {
     if (cur.quantity && cur.price) {

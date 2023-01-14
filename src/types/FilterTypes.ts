@@ -5,7 +5,7 @@ export type FilterValue = {
 
 export enum FilterStringParams {
   Brand = 'brand',
-  Cat = 'category',
+  Cat = 'category',  // TODO: не делайте сокращений (Cat) в названиях переменных и свойств без крайней на то необходимости. Снижает читабельность кода в последствии
 }
 export enum FilterNumberParams {
   Price = 'price',
@@ -15,7 +15,7 @@ export enum FilterNumberParams {
 export type FilterCheckbox = {
   id: number;
   title: string;
-  isCheked: boolean;
+  isCheked: boolean;  // TODO: typo в isChecked, не забывайте настраивать спелчекер в редакторе.
   products: number;
   productsFiltered: number;
 };

@@ -32,21 +32,13 @@ function App() {
   const { Provider: CategoriesProvider } = categoriesContext;
   const { Provider: IsModalProvider } = isModalContext;
 
-  const getUniqueValues = (products: Product[], param: `${FilterStringParams}`) => {
-    const values: FilterValue[] = [];
-
-    Array.from(
-      new Set<FilterCheckbox['title']>(products.map<FilterCheckbox['title']>((product: Product) => product[param]))
+  const getUniqueValues = (products: Product[], param: `${FilterStringParams}`): FilterValue[] => {
+    // TODO: можно упростить
+    return Array.from(
+      new Set(products.map((product) => product[param]))
     )
       .sort()
-      .forEach((value, i) =>
-        values.push({
-          id: i,
-          title: value,
-        })
-      );
-
-    return values;
+      .map((title, id) => ({id, title}))
   };
 
   useEffect(() => {
@@ -79,6 +71,7 @@ function App() {
                 <Routes>
                   <Route path="/" element={<Layout />}>
                     <Route index element={<MainPage />} />
+                    // TODO: пути также лучше выносить в константы, в последствии когда они будут меняться, чтоб не приходилось править по всему проекту.
                     <Route path="/cart" element={<CartPage />} />
                     <Route path="/product/:id" element={<ProductPage />} />
                   </Route>

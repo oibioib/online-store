@@ -28,6 +28,8 @@ const CartPage = () => {
     return JSON.parse(localStorage?.getItem(key) || '{}');
   });
   const [productArr, setProductArr] = useState<Product[]>();
+
+  // TODO: избегайте дублирования кода (DRY принцип). Комменты по reducer src/components/CartInfo.tsx:41
   const totalSum = productArr?.reduce<number>((acc: number, cur: Product) => {
     if (cur.quantity && cur.price) {
       return (acc += +cur?.quantity * +cur?.price);
